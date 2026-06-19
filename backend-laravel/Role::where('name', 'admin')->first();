@@ -1,0 +1,32 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#8110
+    [34mall[39m: [
+      [34;4mApp\Models\Role[39;24m {#8106
+        [34mid[39m: [35m1[39m,
+        [34mname[39m: [32m"[39m[32madmin[39m[32m"[39m,
+        [34mdescription[39m: [32m"[39m[32mSystem administrator with access to user management, assignments, reports, and general platform configuration.[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Role[39;24m {#8105
+        [34mid[39m: [35m2[39m,
+        [34mname[39m: [32m"[39m[32mtutor[39m[32m"[39m,
+        [34mdescription[39m: [32m"[39m[32mTutor user responsible for monitoring assigned students, reviewing alerts, and registering follow-up records.[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Role[39;24m {#8108
+        [34mid[39m: [35m3[39m,
+        [34mname[39m: [32m"[39m[32msupport[39m[32m"[39m,
+        [34mdescription[39m: [32m"[39m[32mInstitutional support staff responsible for managing referred cases and registering support attention records.[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Role[39;24m {#8109
+        [34mid[39m: [35m4[39m,
+        [34mname[39m: [32m"[39m[32mstudent[39m[32m"[39m,
+        [34mdescription[39m: [32m"[39m[32mStudent user who can access the mobile app, submit emotional records, and check support information.[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-06-18 16:22:45[39m[32m"[39m,
+      },
+    ],
+  }
