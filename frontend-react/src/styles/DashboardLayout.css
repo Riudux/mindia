@@ -1,0 +1,1172 @@
+/* 
+  Layout principal del dashboard.
+  Divide la pantalla en sidebar izquierda y contenido principal.
+*/
+.dashboard-shell {
+  min-height: 100vh;
+  display: flex;
+  background: #f7fbff;
+  color: #0f172a;
+}
+
+/* Sidebar fija del lado izquierdo */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-right: 1px solid #e5eaf3;
+}
+
+/* Contenedor del logo y nombre MindIA */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 34px;
+}
+
+/* Icono visual del logo */
+.brand-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #0b63f6;
+  background: linear-gradient(135deg, #eaf2ff, #ffffff);
+  border: 1px solid #dbeafe;
+}
+
+/* Texto MindIA */
+.brand h1 {
+  margin: 0;
+  color: #0b63f6;
+  font-size: 31px;
+  line-height: 1;
+}
+
+/* Texto del panel, ejemplo Admin Panel */
+.brand p {
+  margin: 4px 0 0;
+  color: #53627a;
+  font-size: 16px;
+}
+
+/* Navegación lateral */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Botón de navegación */
+.sidebar-link {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  transition: 0.2s ease;
+}
+
+/* Efecto hover de los botones disponibles */
+.sidebar-link:hover {
+  background: #edf4ff;
+  color: #0b63f6;
+}
+
+/* Botón activo del sidebar */
+.sidebar-link.active {
+  color: #ffffff;
+  background: #0b63f6;
+  box-shadow: 0 8px 20px rgba(11, 99, 246, 0.25);
+}
+
+/* Botones que todavía no tienen pantalla creada */
+.sidebar-link.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Tarjeta del usuario en la parte inferior */
+.sidebar-profile {
+  margin-top: auto;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5eaf3;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+/* Avatar inferior */
+.profile-avatar,
+.topbar-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0b63f6, #60a5fa);
+  font-weight: 800;
+}
+
+/* Información del usuario en sidebar */
+.profile-info {
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Nombre de usuario */
+.profile-info strong {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Rol de usuario */
+.profile-info span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Estado en línea */
+.profile-info small {
+  color: #10b981;
+  font-size: 12px;
+}
+
+/* Contenedor principal derecho */
+.dashboard-main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barra superior */
+.topbar {
+  height: 78px;
+  padding: 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e5eaf3;
+}
+
+/* Buscador superior */
+.topbar-search {
+  width: min(430px, 45vw);
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  color: #64748b;
+  background: #ffffff;
+}
+
+/* Input del buscador */
+.topbar-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Contenedor de acciones del topbar */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Botón de notificaciones */
+.notification-button {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: #1e293b;
+}
+
+/* Indicador rojo de notificación */
+.notification-button span {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Usuario en topbar */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Texto del usuario en topbar */
+.topbar-user strong,
+.topbar-user span {
+  display: block;
+}
+
+/* Nombre del usuario en topbar */
+.topbar-user strong {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Rol del usuario en topbar */
+.topbar-user span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Botón para cerrar sesión */
+.logout-button {
+  height: 38px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #dbe3f1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 700;
+}
+
+/* Hover del botón salir */
+.logout-button:hover {
+  color: #ef4444;
+  border-color: #fecaca;
+  background: #fff5f5;
+}
+
+/* Área donde se renderiza cada pantalla */
+.dashboard-content {
+  flex: 1;
+  padding: 34px;
+}
+
+/* Encabezado de cada pantalla interna */
+.page-header {
+  margin-bottom: 26px;
+}
+
+/* Migas de navegación */
+.breadcrumb {
+  margin: 0 0 10px;
+  color: #0b63f6;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Título de página */
+.page-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 31px;
+}
+
+/* Descripción de página */
+.page-header p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* Grid de tarjetas métricas */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* Tarjeta métrica */
+.metric-card {
+  min-height: 128px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #e5eaf3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+/* Círculo del icono de cada métrica */
+.metric-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+/* Variantes de color para iconos */
+.metric-icon.blue {
+  color: #0b63f6;
+  background: #dbeafe;
+}
+
+.metric-icon.green {
+  color: #10b981;
+  background: #d1fae5;
+}
+
+.metric-icon.orange {
+  color: #f59e0b;
+  background: #fef3c7;
+}
+
+.metric-icon.purple {
+  color: #7c3aed;
+  background: #ede9fe;
+}
+
+/* Texto superior de métrica */
+.metric-card span {
+  color: #475569;
+  font-weight: 700;
+}
+
+/* Número principal de métrica */
+.metric-card h3 {
+  margin: 6px 0 0;
+  color: #0f172a;
+  font-size: 32px;
+}
+
+/* Texto inferior de métrica */
+.metric-card small {
+  color: #0b63f6;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Grid general de paneles */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 18px;
+}
+
+/* Tarjetas grandes de contenido */
+.panel-card {
+  padding: 22px;
+  border: 1px solid #e5eaf3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+/* Títulos dentro de paneles */
+.panel-card h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+/* Texto dentro de paneles */
+.panel-card p {
+  margin: 0 0 18px;
+  color: #64748b;
+}
+
+/* Mensaje para secciones temporales */
+.placeholder-box {
+  padding: 26px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+}
+/* 
+  Contenedor para mostrar resumen de estados.
+  Se usa en paneles como alertas y canalizaciones.
+*/
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Cada fila del resumen: texto + número + barra */
+.summary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Encabezado de cada fila del resumen */
+.summary-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Texto izquierdo de cada resumen */
+.summary-row-header span {
+  text-transform: capitalize;
+}
+
+/* Número derecho de cada resumen */
+.summary-row-header strong {
+  color: #0f172a;
+}
+
+/* Fondo de la barra de progreso */
+.summary-progress {
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+/* Relleno de la barra de progreso */
+.summary-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* Variantes de color para barras */
+.summary-progress-fill.blue {
+  background: #0b63f6;
+}
+
+.summary-progress-fill.green {
+  background: #10b981;
+}
+
+.summary-progress-fill.orange {
+  background: #f59e0b;
+}
+
+.summary-progress-fill.red {
+  background: #ef4444;
+}
+
+.summary-progress-fill.purple {
+  background: #7c3aed;
+}
+
+/* Mensaje informativo dentro de paneles */
+.info-box {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Estado vacío cuando no hay datos */
+.empty-summary {
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+/*
+  Encabezado de página con acciones del lado derecho.
+  Se usa en pantallas como gestión de usuarios.
+*/
+.page-header-with-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+/* Botón azul principal, por ejemplo Nuevo usuario */
+.primary-action-button {
+  height: 48px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #0b63f6;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 10px 24px rgba(11, 99, 246, 0.22);
+}
+
+/* Hover del botón principal */
+.primary-action-button:hover {
+  background: #0858df;
+}
+
+/* Panel de filtros */
+.filters-panel {
+  margin-bottom: 22px;
+}
+
+/* Grid de filtros */
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr;
+  gap: 14px;
+}
+
+/* Input de filtro con icono */
+.filter-input {
+  height: 46px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+}
+
+/* Campo de texto del filtro */
+.filter-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Selects de filtros */
+.filters-grid select {
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Encabezado del panel de tabla */
+.table-header {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Texto secundario del encabezado de tabla */
+.table-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+/* Contenedor para permitir scroll horizontal si la tabla crece */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Tabla general */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Encabezado de tabla */
+.data-table thead {
+  background: #f8fafc;
+}
+
+/* Celdas de tabla */
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5eaf3;
+  text-align: left;
+  color: #334155;
+}
+
+/* Títulos de columnas */
+.data-table th {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Celda de usuario con avatar */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Nombre del usuario en tabla */
+.user-cell strong {
+  display: block;
+  color: #0f172a;
+}
+
+/* ID o texto secundario del usuario */
+.user-cell span {
+  display: block;
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Avatar circular de la tabla */
+.table-avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+  font-weight: 800;
+}
+
+/* Badge general */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Variantes de badge */
+.badge.blue {
+  background: #dbeafe;
+  color: #0b63f6;
+}
+
+.badge.light-blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.badge.green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.badge.purple {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.badge.red {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Botón de acción dentro de tabla */
+.table-action-button {
+  padding: 8px 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0b63f6;
+  font-weight: 800;
+}
+
+/* Hover del botón de acción */
+.table-action-button:hover {
+  background: #eff6ff;
+}
+
+/*
+  Botón secundario usado para acciones como volver o cancelar.
+*/
+.secondary-action-button {
+  height: 48px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/*
+  Hover del botón secundario.
+*/
+.secondary-action-button:hover {
+  background: #f8fafc;
+  border-color: #bfdbfe;
+  color: #0b63f6;
+}
+
+/*
+  Grid principal de la pantalla crear usuario.
+  Izquierda: formulario.
+  Derecha: resumen de permisos.
+*/
+.create-user-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 360px;
+  gap: 22px;
+  align-items: start;
+}
+
+/*
+  Contenedor del formulario principal.
+*/
+.create-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/*
+  Sección interna del formulario.
+*/
+.form-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5eaf3;
+}
+
+/*
+  Quitamos borde a la última sección si aplica.
+*/
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+/*
+  Título de cada sección del formulario.
+*/
+.form-section h3 {
+  margin: 0 0 8px;
+}
+
+/*
+  Descripción de cada sección.
+*/
+.form-section p {
+  margin: 0 0 18px;
+}
+
+/*
+  Opciones visuales de rol.
+*/
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/*
+  Tarjeta de rol seleccionable.
+*/
+.role-option {
+  min-height: 92px;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  border: 1px solid #d8e2f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 800;
+}
+
+/*
+  Estado seleccionado de una tarjeta de rol.
+*/
+.role-option.selected {
+  border-color: #0b63f6;
+  color: #0b63f6;
+  background: #eff6ff;
+}
+
+/*
+  Grid de dos columnas para inputs.
+*/
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+/*
+  Campo individual del formulario.
+*/
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/*
+  Etiqueta del campo.
+*/
+.form-field span {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/*
+  Inputs y selects del formulario.
+*/
+.form-field input,
+.form-field select {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/*
+  Estado focus de inputs y selects.
+*/
+.form-field input:focus,
+.form-field select:focus {
+  border-color: #0b63f6;
+}
+
+/*
+  Alertas del formulario.
+*/
+.form-alert {
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/*
+  Mensaje de error.
+*/
+.form-alert.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/*
+  Mensaje de éxito.
+*/
+.form-alert.success {
+  background: #d1fae5;
+  color: #047857;
+}
+
+/*
+  Contenedor de acciones del formulario.
+*/
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/*
+  Panel derecho de permisos.
+*/
+.permissions-summary {
+  position: sticky;
+  top: 100px;
+}
+
+/*
+  Tarjeta del rol seleccionado.
+*/
+.selected-role-card {
+  margin: 18px 0 24px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #0b63f6;
+}
+
+/*
+  Texto pequeño dentro de la tarjeta de rol.
+*/
+.selected-role-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/*
+  Nombre del rol seleccionado.
+*/
+.selected-role-card strong {
+  display: block;
+  margin-top: 4px;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+/*
+  Lista de permisos.
+*/
+.permissions-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  list-style: none;
+}
+
+/*
+  Permiso individual.
+*/
+.permissions-list li {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/*
+  Permiso permitido.
+*/
+.permissions-list li.allowed {
+  color: #059669;
+}
+
+/*
+  Permiso no disponible para el rol actual.
+*/
+.permissions-list li.muted {
+  color: #94a3b8;
+}
+
+/*
+  Caja de advertencia.
+*/
+.warning-box {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/*
+  Resumen superior dentro de la pantalla editar usuario.
+*/
+.edit-user-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/*
+  Avatar grande de editar usuario.
+*/
+.edit-user-avatar {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+}
+
+/*
+  Título del resumen de usuario.
+*/
+.edit-user-summary h3 {
+  margin: 0 0 6px;
+}
+
+/*
+  Texto secundario del resumen de usuario.
+*/
+.edit-user-summary p {
+  margin: 0;
+  color: #64748b;
+  font-weight: 700;
+}
+
+/*
+  Contenedor de botones en editar usuario.
+*/
+.edit-form-actions {
+  justify-content: space-between;
+}
+
+/*
+  Botón rojo para desactivar cuenta.
+*/
+.danger-action-button {
+  height: 48px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #ef4444;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/*
+  Hover del botón rojo.
+*/
+.danger-action-button:hover {
+  background: #fff5f5;
+}
+
+/*
+  Estado deshabilitado del botón rojo.
+*/
+.danger-action-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/*
+  Responsive de la pantalla crear usuario.
+*/
+@media (max-width: 1100px) {
+  .create-user-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .permissions-summary {
+    position: static;
+  }
+
+  .role-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+/* Responsive para filtros */
+@media (max-width: 900px) {
+  .page-header-with-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Adaptación para pantallas más pequeñas */
+@media (max-width: 1100px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .dashboard-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .topbar {
+    height: auto;
+    padding: 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .topbar-search {
+    width: 100%;
+  }
+
+  .topbar-actions {
+    justify-content: space-between;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+}

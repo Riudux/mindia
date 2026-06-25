@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use App\Models\Student;
+use App\Models\Tutor;
+use App\Models\SupportStaff;
+use Illuminate\Support\Facades\Schema;
+
 
 class UserController extends Controller
 {
@@ -196,57 +201,333 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, User $user)
+    /*
+    |--------------------------------------------------------------------------
+    | Mostrar un usuario específico
+    |--------------------------------------------------------------------------
+    |
+    | Este método devuelve la información general del usuario y también sus datos
+    | relacionados según el rol:
+    |
+    | - students
+    | - tutors
+    | - support_staff
+    |
+    | Esto permite que el frontend cargue correctamente datos como matrícula,
+    | carrera, cuatrimestre, grupo, área o departamento al abrir la pantalla
+    | de edición.
+    |
+    */
+    public function show(User $user)
     {
-        if ($response = $this->ensureAdmin($request)) {
-            return $response;
-        }
+        // Convertimos el usuario a arreglo para poder agregar datos relacionados.
+        $userData = $user->toArray();
+
+        // Adjuntamos los datos del estudiante si existen.
+        $userData['student'] = Student::where('user_id', $user->id)->first();
+
+        // Adjuntamos los datos del tutor si existen.
+        $userData['tutor'] = Tutor::where('user_id', $user->id)->first();
+
+        // Adjuntamos los datos del personal de apoyo si existen.
+        $userData['support_staff'] = SupportStaff::where('user_id', $user->id)->first();
 
         return response()->json([
-            'user' => $user->load('role', 'student', 'tutor', 'supportStaff'),
+            'user' => $userData,
         ]);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar usuario
+    |--------------------------------------------------------------------------
+    |
+    | Este método actualiza tanto los datos principales del usuario como los datos
+    | específicos de su perfil según el rol:
+    |
+    | Rol estudiante:
+    | - enrollment_key
+    | - career
+    | - semester
+    | - group_name
+    | - phone, si existe la columna
+    |
+    | Rol tutor:
+    | - employee_key
+    | - area
+    | - department
+    | - phone, si existe la columna
+    |
+    | Rol apoyo psicológico:
+    | - employee_key
+    | - area
+    | - department
+    | - phone, si existe la columna
+    |
+    | Rol administrador:
+    | - datos generales del usuario
+    | - area, department y phone si existen columnas relacionadas en el futuro
+    |
+    */
     public function update(Request $request, User $user)
     {
-        if ($response = $this->ensureAdmin($request)) {
-            return $response;
-        }
+        // Convertimos el rol recibido a número para validar campos condicionales.
+        $roleId = (int) $request->input('role_id');
 
-        $request->validate([
-            'role_id' => ['sometimes', 'exists:roles,id'],
-            'name' => ['sometimes', 'string', 'max:255'],
+        /*
+        |--------------------------------------------------------------------------
+        | Validación
+        |--------------------------------------------------------------------------
+        |
+        | Validamos primero los datos generales del usuario.
+        | Después validamos campos específicos según el rol.
+        |
+        */
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
             'email' => [
-                'sometimes',
+                'required',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
-            'password' => ['nullable', 'string', 'min:8'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'profile_photo' => ['nullable', 'string', 'max:255'],
-            'status' => ['sometimes', Rule::in(['active', 'inactive'])],
+
+            'role_id' => [
+                'required',
+                'integer',
+                'exists:roles,id',
+            ],
+
+            'is_active' => [
+                'required',
+                'boolean',
+            ],
+
+            /*
+            |--------------------------------------------------------------
+            | Campos para estudiante
+            |--------------------------------------------------------------
+            |
+            | Estos campos se requieren únicamente cuando role_id = 4.
+            |
+            */
+            'enrollment_key' => [
+                Rule::requiredIf($roleId === 4),
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'career' => [
+                Rule::requiredIf($roleId === 4),
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'semester' => [
+                Rule::requiredIf($roleId === 4),
+                'nullable',
+                'integer',
+                'min:0',
+                'max:10',
+            ],
+
+            'group_name' => [
+                Rule::requiredIf($roleId === 4),
+                'nullable',
+                'string',
+                'in:A,B,C,D',
+            ],
+
+            /*
+            |--------------------------------------------------------------
+            | Campos para tutor o apoyo
+            |--------------------------------------------------------------
+            |
+            | employee_key se requiere para tutor y personal de apoyo.
+            |
+            */
+            'employee_key' => [
+                Rule::requiredIf(in_array($roleId, [2, 3])),
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'area' => [
+                Rule::requiredIf(in_array($roleId, [2, 3])),
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'department' => [
+                Rule::requiredIf(in_array($roleId, [2, 3])),
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            /*
+            |--------------------------------------------------------------
+            | Teléfono opcional
+            |--------------------------------------------------------------
+            |
+            | El teléfono se recibe desde el frontend, pero solo se guarda si
+            | la tabla correspondiente tiene una columna llamada phone.
+            |
+            */
+            'phone' => [
+                'nullable',
+                'string',
+                'max:30',
+            ],
         ]);
 
-        $data = $request->only([
-            'role_id',
-            'name',
-            'email',
-            'phone',
-            'profile_photo',
-            'status',
-        ]);
+        /*
+        |--------------------------------------------------------------------------
+        | Transacción
+        |--------------------------------------------------------------------------
+        |
+        | Usamos una transacción para que los cambios del usuario y su perfil se
+        | guarden juntos. Si algo falla, Laravel revierte todo.
+        |
+        */
+        return DB::transaction(function () use ($validated, $user, $roleId) {
+            /*
+            |--------------------------------------------------------------------------
+            | Actualizar tabla users
+            |--------------------------------------------------------------------------
+            */
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'role_id' => $validated['role_id'],
+                'is_active' => $validated['is_active'],
+            ]);
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
+            /*
+            |--------------------------------------------------------------------------
+            | Actualizar perfil de estudiante
+            |--------------------------------------------------------------------------
+            |
+            | Si el rol seleccionado es estudiante, actualizamos o creamos el registro
+            | correspondiente en la tabla students.
+            |
+            */
+            if ($roleId === 4) {
+                $studentData = [
+                    'enrollment_key' => $validated['enrollment_key'],
+                    'career' => $validated['career'],
+                    'semester' => $validated['semester'],
+                    'group_name' => $validated['group_name'],
+                ];
 
-        $user->update($data);
+                // Guardamos phone solo si existe la columna en students.
+                if (Schema::hasColumn('students', 'phone')) {
+                    $studentData['phone'] = $validated['phone'] ?? null;
+                }
 
-        return response()->json([
-            'message' => 'User updated successfully.',
-            'user' => $user->load('role'),
-        ]);
+                Student::updateOrCreate(
+                    ['user_id' => $user->id],
+                    $studentData
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Actualizar perfil de tutor
+            |--------------------------------------------------------------------------
+            |
+            | Si el rol seleccionado es tutor, actualizamos o creamos el registro
+            | correspondiente en la tabla tutors.
+            |
+            */
+            if ($roleId === 2) {
+                $tutorData = [];
+
+                if (Schema::hasColumn('tutors', 'employee_key')) {
+                    $tutorData['employee_key'] = $validated['employee_key'];
+                }
+
+                if (Schema::hasColumn('tutors', 'area')) {
+                    $tutorData['area'] = $validated['area'];
+                }
+
+                if (Schema::hasColumn('tutors', 'department')) {
+                    $tutorData['department'] = $validated['department'];
+                }
+
+                if (Schema::hasColumn('tutors', 'phone')) {
+                    $tutorData['phone'] = $validated['phone'] ?? null;
+                }
+
+                Tutor::updateOrCreate(
+                    ['user_id' => $user->id],
+                    $tutorData
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Actualizar perfil de personal de apoyo
+            |--------------------------------------------------------------------------
+            |
+            | Si el rol seleccionado es apoyo psicológico, actualizamos o creamos el
+            | registro correspondiente en la tabla support_staff.
+            |
+            */
+            if ($roleId === 3) {
+                $supportData = [];
+
+                if (Schema::hasColumn('support_staff', 'employee_key')) {
+                    $supportData['employee_key'] = $validated['employee_key'];
+                }
+
+                if (Schema::hasColumn('support_staff', 'area')) {
+                    $supportData['area'] = $validated['area'];
+                }
+
+                if (Schema::hasColumn('support_staff', 'department')) {
+                    $supportData['department'] = $validated['department'];
+                }
+
+                if (Schema::hasColumn('support_staff', 'phone')) {
+                    $supportData['phone'] = $validated['phone'] ?? null;
+                }
+
+                SupportStaff::updateOrCreate(
+                    ['user_id' => $user->id],
+                    $supportData
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Preparar respuesta actualizada
+            |--------------------------------------------------------------------------
+            |
+            | Volvemos a consultar los datos relacionados para confirmar que se
+            | guardaron correctamente.
+            |
+            */
+            $updatedUser = $user->fresh()->toArray();
+
+            $updatedUser['student'] = Student::where('user_id', $user->id)->first();
+            $updatedUser['tutor'] = Tutor::where('user_id', $user->id)->first();
+            $updatedUser['support_staff'] = SupportStaff::where('user_id', $user->id)->first();
+
+            return response()->json([
+                'message' => 'User updated successfully.',
+                'user' => $updatedUser,
+            ]);
+        });
     }
 
     public function updateStatus(Request $request, User $user)

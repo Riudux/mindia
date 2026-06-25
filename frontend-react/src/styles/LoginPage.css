@@ -1,0 +1,126 @@
+/* Contenedor principal de la pantalla de login */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #0f172a;
+  font-family: Arial, sans-serif;
+}
+
+/* Tarjeta central del login */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* Encabezado del formulario */
+.login-header {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+/* Título principal */
+.login-header h1 {
+  margin: 0;
+  color: #2563eb;
+  font-size: 42px;
+}
+
+/* Texto secundario */
+.login-header p {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* Formulario */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Grupo de label + input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Etiquetas del formulario */
+.form-group label {
+  color: #334155;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Campos de texto */
+.form-group input {
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Efecto cuando el usuario selecciona un input */
+.form-group input:focus {
+  border-color: #2563eb;
+}
+
+/* Mensaje de error */
+.login-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+/* Botón principal */
+.login-form button {
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Estado deshabilitado del botón */
+.login-form button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Caja de datos demo */
+.login-demo {
+  margin-top: 22px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  text-align: center;
+}
+
+/* Texto de usuario demo */
+.login-demo p {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Credenciales demo */
+.login-demo span {
+  color: #334155;
+  font-size: 13px;
+  font-weight: bold;
+}
