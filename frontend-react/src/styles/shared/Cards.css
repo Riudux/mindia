@@ -1,0 +1,141 @@
+/*
+  Grid de tarjetas métricas.
+  Se usa en dashboards y pantallas administrativas.
+*/
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* Tarjeta métrica */
+.metric-card {
+  min-height: 128px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #e5eaf3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+/* Círculo del icono de cada métrica */
+.metric-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+/* Variantes de color para iconos */
+.metric-icon.blue {
+  color: #0b63f6;
+  background: #dbeafe;
+}
+
+.metric-icon.green {
+  color: #10b981;
+  background: #d1fae5;
+}
+
+.metric-icon.orange {
+  color: #f59e0b;
+  background: #fef3c7;
+}
+
+.metric-icon.purple {
+  color: #7c3aed;
+  background: #ede9fe;
+}
+
+/* Texto superior de métrica */
+.metric-card span {
+  color: #475569;
+  font-weight: 700;
+}
+
+/* Número principal de métrica */
+.metric-card h3 {
+  margin: 6px 0 0;
+  color: #0f172a;
+  font-size: 32px;
+}
+
+/* Texto inferior de métrica */
+.metric-card small {
+  color: #0b63f6;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/*
+  Tarjeta de panel general.
+  Se usa como contenedor visual para formularios, tablas y resúmenes.
+*/
+.panel-card {
+  padding: 22px;
+  border: 1px solid #e5eaf3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+/* Títulos dentro de paneles */
+.panel-card h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+/* Texto dentro de paneles */
+.panel-card p {
+  margin: 0 0 18px;
+  color: #64748b;
+}
+
+/* Mensaje para secciones temporales */
+.placeholder-box {
+  padding: 26px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+}
+
+/* Mensaje informativo dentro de paneles */
+.info-box {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Estado vacío cuando no hay datos */
+.empty-summary {
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+/* Responsive para tarjetas */
+@media (max-width: 1100px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 820px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

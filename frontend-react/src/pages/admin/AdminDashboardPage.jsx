@@ -13,6 +13,9 @@ import {
 // Importamos el layout base con sidebar y topbar.
 import DashboardLayout from "../../layouts/DashboardLayout";
 
+// Importamos los estilos específicos de la página de dashboard admin.
+import "../../styles/pages/admin/AdminDashboardPage.css";
+
 // Importamos la función que consume GET /api/admin/dashboard-summary.
 import { getAdminDashboardSummary } from "../../api/adminApi";
 

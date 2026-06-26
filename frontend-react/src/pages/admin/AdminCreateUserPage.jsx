@@ -16,6 +16,9 @@ import {
 // Importamos el layout base del dashboard.
 import DashboardLayout from "../../layouts/DashboardLayout";
 
+// Importamos los estilos específicos de la página de creación de usuarios.
+import "../../styles/pages/admin/AdminUserFormPage.css";
+
 // Importamos la función que consume POST /api/users.
 import { createUserRequest } from "../../api/adminApi";
 
@@ -803,7 +806,7 @@ function AdminCreateUserPage() {
 
           <div className="form-section">
             <h3>4. Datos académicos / área</h3>
-            <div className="form-grid-2">
+            <div className="academic-fields-grid">
                 <label className="form-field">
                 <span>{academicLabels.firstLabel} *</span>
 
@@ -893,23 +896,23 @@ function AdminCreateUserPage() {
                 no al grupo.
                 */}
                 {Number(roleId) === 4 && (
-                <label className="form-field">
+                  <label className="form-field academic-group-field">
                     <span>Grupo *</span>
 
                     <select
-                    value={groupName}
-                    onChange={(event) => setGroupName(event.target.value)}
-                    required
+                      value={groupName}
+                      onChange={(event) => setGroupName(event.target.value)}
+                      required
                     >
-                    <option value="">Selecciona un grupo</option>
+                      <option value="">Selecciona un grupo</option>
 
-                    {STUDENT_GROUP_OPTIONS.map((group) => (
+                      {STUDENT_GROUP_OPTIONS.map((group) => (
                         <option key={group} value={group}>
-                        {group}
+                          {group}
                         </option>
-                    ))}
+                      ))}
                     </select>
-                </label>
+                  </label>
                 )}
             </div>
           </div>

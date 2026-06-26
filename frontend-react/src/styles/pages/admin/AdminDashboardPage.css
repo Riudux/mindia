@@ -1,0 +1,88 @@
+/*
+  Grid general de paneles del dashboard admin.
+*/
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 18px;
+}
+
+/*
+  Contenedor para mostrar resumen de estados.
+  Se usa en paneles como alertas y canalizaciones.
+*/
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Cada fila del resumen */
+.summary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Encabezado de cada fila del resumen */
+.summary-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Texto izquierdo de resumen */
+.summary-row-header span {
+  text-transform: capitalize;
+}
+
+/* Número derecho del resumen */
+.summary-row-header strong {
+  color: #0f172a;
+}
+
+/* Fondo de barra de progreso */
+.summary-progress {
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+/* Relleno de barra de progreso */
+.summary-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* Variantes de color */
+.summary-progress-fill.blue {
+  background: #0b63f6;
+}
+
+.summary-progress-fill.green {
+  background: #10b981;
+}
+
+.summary-progress-fill.orange {
+  background: #f59e0b;
+}
+
+.summary-progress-fill.red {
+  background: #ef4444;
+}
+
+.summary-progress-fill.purple {
+  background: #7c3aed;
+}
+
+/* Responsive del dashboard admin */
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

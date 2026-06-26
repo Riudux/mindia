@@ -11,6 +11,9 @@ import UnauthorizedPage from "../pages/UnauthorizedPage";
 // Importamos página que redirige según el rol.
 import DashboardRedirect from "../pages/DashboardRedirect";
 
+// Importamos dashboards por rol.
+import DashboardLayout from "../layouts/DashboardLayout";
+
 // Importamos dashboards temporales por rol.
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import TutorDashboardPage from "../pages/tutor/TutorDashboardPage";
@@ -19,6 +22,7 @@ import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AdminUsersPage from "../pages/admin/AdminUsersPage";
 import AdminCreateUserPage from "../pages/admin/AdminCreateUserPage";
 import AdminEditUserPage from "../pages/admin/AdminEditUserPage";
+import AdminAssignmentsPage from "../pages/admin/AdminAssignmentsPage";
 
 function AppRouter() {
   return (
@@ -58,17 +62,6 @@ function AppRouter() {
             }
         />
 
-        {/* Ruta protegida del tutor.
-            Solo usuarios con rol tutor pueden entrar. */}
-        <Route
-          path="/tutor/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["tutor"]}>
-              <TutorDashboardPage />
-            </ProtectedRoute>
-          }
-        />
-
         {/* Ruta protegida del personal de soporte.
             Solo usuarios con rol support pueden entrar. */}
         <Route
@@ -105,6 +98,31 @@ function AppRouter() {
                 <AdminEditUserPage />
                 </ProtectedRoute>
             }
+        />
+
+        <Route
+          path="/admin/assignments"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardLayout>
+                <AdminAssignmentsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Ruta protegida del tutor.
+            Solo usuarios con rol tutor pueden entrar. */}
+        <Route
+          path="/tutor/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorDashboardPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
         />
 
         {/* Ruta comodín.

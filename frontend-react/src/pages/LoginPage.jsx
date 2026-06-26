@@ -104,8 +104,29 @@ function LoginPage() {
       console.log("Login correcto:", data);
       console.log("Rol detectado:", userRole);
 
-      // Redirigimos al dashboard temporal.
-      navigate("/dashboard");
+      // Redirigimos al usuario según su rol institucional.
+      if (userRole === "admin" || userRole === "administrator") {
+        navigate("/admin/dashboard");
+        return;
+      }
+
+      if (userRole === "tutor") {
+        navigate("/tutor/dashboard");
+        return;
+      }
+
+      if (userRole === "student") {
+        navigate("/student/dashboard");
+        return;
+      }
+
+      if (userRole === "support") {
+        navigate("/support/dashboard");
+        return;
+      }
+
+      // Si el rol no coincide con ninguno permitido, lo mandamos a no autorizado.
+      navigate("/unauthorized");
     } catch (error) {
       // Tomamos el mensaje del backend si existe.
       const backendMessage =

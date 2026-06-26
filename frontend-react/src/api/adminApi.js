@@ -114,3 +114,26 @@ export const updateUserStatusRequest = async (userId, isActive) => {
   // Regresamos la respuesta del backend.
   return response.data;
 };
+
+/*
+  Obtiene las asignaciones estudiante-tutor registradas en el sistema.
+
+  Este endpoint se usa en la pantalla de Asignaciones para mostrar
+  qué estudiantes ya tienen un tutor asignado.
+*/
+export const getStudentTutorAssignmentsRequest = async () => {
+  const response = await apiClient.get("/student-tutor-assignments");
+  return response.data;
+};
+
+/*
+  Crea una nueva asignación entre un estudiante y un tutor.
+
+  El backend espera recibir:
+  - student_id: ID real del perfil de estudiante.
+  - tutor_id: ID real del perfil de tutor.
+*/
+export const createStudentTutorAssignmentRequest = async (payload) => {
+  const response = await apiClient.post("/student-tutor-assignments", payload);
+  return response.data;
+};

@@ -22,6 +22,10 @@ import {
 
 // Importamos los estilos del layout.
 import "../styles/DashboardLayout.css";
+import "../styles/shared/Buttons.css";
+import "../styles/shared/Cards.css";
+import "../styles/shared/Forms.css";
+import "../styles/shared/Tables.css";
 
 /*
   Configuración visual por rol.
@@ -85,7 +89,7 @@ const NAV_ITEMS = {
       label: "Asignaciones",
       path: "/admin/assignments",
       icon: ClipboardList,
-      ready: false,
+      ready: true,
     },
     {
       label: "Alertas",

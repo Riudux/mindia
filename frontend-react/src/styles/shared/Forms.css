@@ -1,0 +1,132 @@
+/*
+  Sección interna de formularios.
+  Divide visualmente bloques como datos de cuenta, datos personales, etc.
+*/
+.form-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5eaf3;
+}
+
+/* Quitamos borde a la última sección */
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+/* Título de cada sección */
+.form-section h3 {
+  margin: 0 0 8px;
+}
+
+/* Descripción de cada sección */
+.form-section p {
+  margin: 0 0 18px;
+}
+
+/*
+  Grid de dos columnas para campos.
+
+  Usamos minmax(0, 1fr) para evitar que inputs o selects con texto largo
+  se salgan de la card. Esto corrige el problema del select de cuatrimestre
+  y programa académico.
+*/
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/*
+  Campo individual del formulario.
+
+  min-width: 0 permite que el campo se reduzca correctamente dentro del grid
+  sin empujar la card hacia afuera.
+*/
+.form-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Etiqueta del campo */
+.form-field span {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/*
+  Grid específico de datos académicos.
+
+  minmax(0, 1fr) evita que el select de cuatrimestre o programa académico
+  se salga de la card cuando el texto es largo.
+*/
+.academic-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/*
+  Inputs y selects del formulario.
+
+  width: 100%, max-width: 100% y min-width: 0 evitan que los campos
+  se desborden cuando tienen textos largos, como carreras o cuatrimestres.
+*/
+.form-field input,
+.form-field select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Estado focus de inputs y selects */
+.form-field input:focus,
+.form-field select:focus {
+  border-color: #0b63f6;
+}
+
+/* Alertas de formulario */
+.form-alert {
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* Mensaje de error */
+.form-alert.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Mensaje de éxito */
+.form-alert.success {
+  background: #d1fae5;
+  color: #047857;
+}
+
+/* Contenedor de acciones del formulario */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* Responsive para formularios */
+@media (max-width: 720px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

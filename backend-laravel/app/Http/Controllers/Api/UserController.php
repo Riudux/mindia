@@ -30,33 +30,39 @@ class UserController extends Controller
         return null;
     }
 
-    public function index(Request $request)
+    /*
+    |--------------------------------------------------------------------------
+    | Listado de usuarios
+    |--------------------------------------------------------------------------
+    |
+    | Este método devuelve todos los usuarios registrados en el sistema.
+    | Además de los datos básicos de la tabla users, también agrega la
+    | información relacionada según el rol:
+    |
+    | - student: datos académicos si el usuario es estudiante.
+    | - tutor: datos del tutor si el usuario tiene rol tutor.
+    | - support_staff: datos del personal de apoyo si aplica.
+    |
+    | Esto es necesario para que el frontend pueda usar los IDs reales de
+    | students.id y tutors.id al crear asignaciones estudiante-tutor.
+    |
+    */
+    public function index()
     {
-        if ($response = $this->ensureAdmin($request)) {
-            return $response;
-        }
+        $users = User::orderBy('id', 'asc')->get();
 
-        $users = User::with('role')
-            ->when($request->search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'ILIKE', "%{$search}%")
-                        ->orWhere('email', 'ILIKE', "%{$search}%")
-                        ->orWhere('phone', 'ILIKE', "%{$search}%");
-                });
-            })
-            ->when($request->status, function ($query, $status) {
-                $query->where('status', $status);
-            })
-            ->when($request->role, function ($query, $role) {
-                $query->whereHas('role', function ($q) use ($role) {
-                    $q->where('name', $role);
-                });
-            })
-            ->orderBy('id', 'asc')
-            ->get();
+        $usersWithProfiles = $users->map(function ($user) {
+            $userData = $user->toArray();
+
+            $userData['student'] = Student::where('user_id', $user->id)->first();
+            $userData['tutor'] = Tutor::where('user_id', $user->id)->first();
+            $userData['support_staff'] = SupportStaff::where('user_id', $user->id)->first();
+
+            return $userData;
+        });
 
         return response()->json([
-            'users' => $users,
+            'users' => $usersWithProfiles,
         ]);
     }
 

@@ -1,0 +1,62 @@
+/*
+  Panel de filtros de la pantalla de usuarios.
+*/
+.filters-panel {
+  margin-bottom: 22px;
+}
+
+/*
+  Grid de filtros.
+  Contiene búsqueda, filtro de rol y filtro de estado.
+*/
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr;
+  gap: 14px;
+}
+
+/*
+  Input de filtro con icono.
+*/
+.filter-input {
+  height: 46px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+}
+
+/*
+  Campo de texto dentro del filtro.
+*/
+.filter-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/*
+  Selects de filtros.
+*/
+.filters-grid select {
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Responsive de filtros */
+@media (max-width: 900px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+}

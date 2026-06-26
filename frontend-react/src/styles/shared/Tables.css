@@ -1,0 +1,122 @@
+/*
+  Encabezado del panel de tabla.
+*/
+.table-header {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Texto secundario del encabezado de tabla */
+.table-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+/* Contenedor para scroll horizontal si la tabla crece */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Tabla general */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Encabezado de tabla */
+.data-table thead {
+  background: #f8fafc;
+}
+
+/* Celdas de tabla */
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5eaf3;
+  text-align: left;
+  color: #334155;
+}
+
+/* Títulos de columnas */
+.data-table th {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Celda de usuario con avatar */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Nombre del usuario en tabla */
+.user-cell strong {
+  display: block;
+  color: #0f172a;
+}
+
+/* Texto secundario del usuario */
+.user-cell span {
+  display: block;
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Avatar circular de tabla */
+.table-avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+  font-weight: 800;
+}
+
+/* Badge general */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Variantes de badge */
+.badge.blue {
+  background: #dbeafe;
+  color: #0b63f6;
+}
+
+.badge.light-blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.badge.green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.badge.purple {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.badge.red {
+  background: #fee2e2;
+  color: #ef4444;
+}

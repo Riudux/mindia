@@ -18,6 +18,9 @@ import {
 // Importamos el layout base del dashboard.
 import DashboardLayout from "../../layouts/DashboardLayout";
 
+// Importamos los estilos específicos de la página de administración de usuarios.
+import "../../styles/pages/admin/AdminUsersPage.css";
+
 // Importamos la función que consume GET /api/users.
 import { getUsersRequest } from "../../api/adminApi";
 

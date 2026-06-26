@@ -21,6 +21,9 @@ import {
 // Importamos el layout base del dashboard.
 import DashboardLayout from "../../layouts/DashboardLayout";
 
+// Importamos los estilos específicos de la página de edición de usuarios.
+import "../../styles/pages/admin/AdminUserFormPage.css";
+
 // Importamos las funciones que consumen los endpoints del backend.
 import {
   getUserRequest,
@@ -1008,7 +1011,7 @@ function AdminEditUserPage() {
             <div className="form-section">
               <h3>4. Datos académicos / área</h3>
 
-              <div className="form-grid-2">
+              <div className="academic-fields-grid">
                 <label className="form-field">
                   <span>{academicLabels.firstLabel}</span>
 
@@ -1078,7 +1081,7 @@ function AdminEditUserPage() {
                 </label>
 
                 {Number(roleId) === 4 && (
-                  <label className="form-field">
+                  <label className="form-field academic-group-field">
                     <span>Grupo *</span>
 
                     <select

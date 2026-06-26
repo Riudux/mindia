@@ -1,0 +1,257 @@
+/*
+  Grid principal de las pantallas de crear y editar usuario.
+  Izquierda: formulario.
+  Derecha: resumen de permisos o cuenta.
+*/
+.create-user-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 360px;
+  gap: 22px;
+  align-items: start;
+}
+
+/*
+  Contenedor del formulario principal.
+*/
+.create-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/*
+  Opciones visuales de rol.
+*/
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/*
+  Tarjeta de rol seleccionable.
+*/
+.role-option {
+  min-height: 92px;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  border: 1px solid #d8e2f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 800;
+}
+
+/*
+  Estado seleccionado de una tarjeta de rol.
+*/
+.role-option.selected {
+  border-color: #0b63f6;
+  color: #0b63f6;
+  background: #eff6ff;
+}
+
+/*
+  Panel derecho de permisos o resumen de cuenta.
+*/
+.permissions-summary {
+  position: sticky;
+  top: 100px;
+}
+
+/*
+  Tarjeta del rol o usuario seleccionado.
+*/
+.selected-role-card {
+  margin: 18px 0 24px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #0b63f6;
+}
+
+/*
+  Texto pequeño dentro de la tarjeta seleccionada.
+*/
+.selected-role-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/*
+  Nombre del rol o usuario seleccionado.
+*/
+.selected-role-card strong {
+  display: block;
+  margin-top: 4px;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+/*
+  Lista de permisos o datos rápidos.
+*/
+.permissions-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  list-style: none;
+}
+
+/*
+  Elemento individual de permisos.
+*/
+.permissions-list li {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/*
+  Permiso disponible.
+*/
+.permissions-list li.allowed {
+  color: #059669;
+}
+
+/*
+  Permiso no disponible.
+*/
+.permissions-list li.muted {
+  color: #94a3b8;
+}
+
+/*
+  Caja de advertencia.
+*/
+.warning-box {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/*
+  Resumen superior dentro de la pantalla editar usuario.
+*/
+.edit-user-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/*
+  Avatar grande de editar usuario.
+*/
+.edit-user-avatar {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+}
+
+/*
+  Título del resumen de usuario.
+*/
+.edit-user-summary h3 {
+  margin: 0 0 6px;
+}
+
+/*
+  Texto secundario del resumen de usuario.
+*/
+.edit-user-summary p {
+  margin: 0;
+  color: #64748b;
+  font-weight: 700;
+}
+
+/*
+  Acciones del formulario de edición.
+*/
+.edit-form-actions {
+  justify-content: space-between;
+}
+
+/* Responsive de formularios de usuario */
+@media (max-width: 1100px) {
+  .create-user-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .permissions-summary {
+    position: static;
+  }
+
+  .role-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+  Grid específico para datos académicos dentro de crear/editar usuario.
+
+  Separamos este grid del form-grid-2 general porque esta sección puede tener
+  tres campos cuando el rol seleccionado es Estudiante:
+  - Programa académico
+  - Cuatrimestre
+  - Grupo
+
+  Así evitamos que los labels o campos se desacomoden visualmente.
+*/
+.academic-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+/*
+  Campo de grupo académico.
+
+  Lo hacemos ocupar una sola columna para que quede alineado debajo
+  del programa académico, como en el diseño del formulario.
+*/
+.academic-group-field {
+  max-width: 100%;
+}
+
+/*
+  Ajuste visual para los labels de la sección académica.
+  Esto asegura que los textos como Programa académico, Cuatrimestre y Grupo
+  mantengan el mismo peso, tamaño y color que los demás campos.
+*/
+.academic-fields-grid .form-field span {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/*
+  Responsive para datos académicos.
+*/
+@media (max-width: 720px) {
+  .academic-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}

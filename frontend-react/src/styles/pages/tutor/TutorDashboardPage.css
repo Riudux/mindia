@@ -1,0 +1,244 @@
+/*
+  Grid principal del dashboard del tutor.
+  Izquierda: lista de estudiantes.
+  Derecha: resumen de seguimiento.
+*/
+.tutor-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 360px;
+  gap: 22px;
+  align-items: start;
+}
+
+/*
+  Tarjeta principal de estudiantes asignados.
+*/
+.tutor-students-card {
+  min-width: 0;
+}
+
+/*
+  Buscador de estudiantes del tutor.
+*/
+.tutor-search {
+  width: min(360px, 100%);
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+}
+
+/*
+  Input del buscador.
+*/
+.tutor-search input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/*
+  Lista vertical de estudiantes.
+*/
+.tutor-student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/*
+  Tarjeta individual de estudiante.
+*/
+.tutor-student-card {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #e5eaf3;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+/*
+  Avatar del estudiante.
+*/
+.tutor-student-avatar {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+  font-weight: 900;
+}
+
+/*
+  Contenedor de datos del estudiante.
+*/
+.tutor-student-info {
+  min-width: 0;
+}
+
+/*
+  Nombre del estudiante.
+*/
+.tutor-student-info strong {
+  display: block;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+/*
+  Correo del estudiante.
+*/
+.tutor-student-info span {
+  display: block;
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/*
+  Etiquetas académicas del estudiante.
+*/
+.tutor-student-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/*
+  Chip individual de información académica.
+*/
+.tutor-student-tags small {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/*
+  Tarjeta lateral de resumen.
+*/
+.tutor-summary-card {
+  position: sticky;
+  top: 100px;
+}
+
+/*
+  Lista de indicadores del resumen.
+*/
+.tutor-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/*
+  Indicador individual.
+*/
+.tutor-summary-item {
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5eaf3;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+/*
+  Icono del indicador.
+*/
+.tutor-summary-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+/*
+  Variantes visuales de icono.
+*/
+.tutor-summary-icon.blue {
+  color: #0b63f6;
+  background: #dbeafe;
+}
+
+.tutor-summary-icon.orange {
+  color: #f59e0b;
+  background: #fef3c7;
+}
+
+.tutor-summary-icon.green {
+  color: #10b981;
+  background: #d1fae5;
+}
+
+/*
+  Texto descriptivo del indicador.
+*/
+.tutor-summary-item span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/*
+  Número principal del indicador.
+*/
+.tutor-summary-item strong {
+  display: block;
+  margin-top: 4px;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+/*
+  Responsive del dashboard del tutor.
+*/
+@media (max-width: 1100px) {
+  .tutor-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tutor-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .table-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tutor-search {
+    width: 100%;
+  }
+
+  .tutor-student-card {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .tutor-student-card .table-action-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

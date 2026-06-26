@@ -9,6 +9,7 @@ use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
 
 class StudentTutorAssignmentController extends Controller
 {
@@ -57,102 +58,123 @@ class StudentTutorAssignmentController extends Controller
     }
 
     /*
-     * Crea una nueva asignación estudiante-tutor.
-     *
-     * Recibe:
-     * - student_id: ID del registro en la tabla students.
-     * - tutor_id: ID del registro en la tabla tutors.
-     * - status: estado de la asignación, por defecto active.
-     *
-     * También registra:
-     * - assigned_by: usuario admin que hizo la asignación.
-     * - assigned_at: fecha y hora de la asignación.
-     */
+    |--------------------------------------------------------------------------
+    | Crear o reasignar estudiante a tutor
+    |--------------------------------------------------------------------------
+    |
+    | Este método crea una asignación entre un estudiante y un tutor.
+    |
+    | Regla de negocio:
+    | - Un estudiante solo puede tener un tutor activo a la vez.
+    | - Si el estudiante ya tiene un tutor activo diferente, esa asignación
+    |   anterior se marca como inactiva.
+    | - Si el estudiante ya está activo con el mismo tutor, se devuelve error 409.
+    |
+    */
     public function store(Request $request)
     {
-        // Verifica que el usuario autenticado sea admin.
-        if ($response = $this->ensureAdmin($request)) {
-            return $response;
-        }
-
-        /*
-         * Valida que el estudiante y el tutor existan.
-         * El status solo puede ser active o inactive.
-         */
-        $request->validate([
-            'student_id' => ['required', 'exists:students,id'],
-            'tutor_id' => ['required', 'exists:tutors,id'],
-            'status' => ['nullable', Rule::in(['active', 'inactive'])],
+        $validated = $request->validate([
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'tutor_id' => ['required', 'integer', 'exists:tutors,id'],
         ]);
 
-        /*
-         * Obtiene el estudiante y su usuario relacionado.
-         * Esto permite validar que la cuenta del estudiante esté activa.
-         */
-        $student = Student::with('user')->findOrFail($request->student_id);
+        return DB::transaction(function () use ($validated) {
+            $studentId = $validated['student_id'];
+            $tutorId = $validated['tutor_id'];
 
-        /*
-         * Obtiene el tutor y su usuario relacionado.
-         * Esto permite validar que la cuenta del tutor esté activa.
-         */
-        $tutor = Tutor::with('user')->findOrFail($request->tutor_id);
+            /*
+            Consulta base para encontrar asignaciones activas.
+            Soporta dos posibles diseños de tabla:
+            - status = active / inactive
+            - is_active = true / false
+            */
+            $activeAssignmentsQuery = StudentTutorAssignment::where('student_id', $studentId);
 
-        /*
-         * No se debe asignar un estudiante cuya cuenta esté inactiva.
-         * Esto evita que el tutor reciba estudiantes desactivados.
-         */
-        if (!$student->user || $student->user->status !== 'active') {
+            if (Schema::hasColumn('student_tutor_assignments', 'status')) {
+                $activeAssignmentsQuery->where('status', 'active');
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'is_active')) {
+                $activeAssignmentsQuery->where('is_active', true);
+            }
+
+            /*
+            Validamos si el estudiante ya está asignado activamente
+            al mismo tutor.
+            */
+            $sameTutorActiveQuery = StudentTutorAssignment::where('student_id', $studentId)
+                ->where('tutor_id', $tutorId);
+
+            if (Schema::hasColumn('student_tutor_assignments', 'status')) {
+                $sameTutorActiveQuery->where('status', 'active');
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'is_active')) {
+                $sameTutorActiveQuery->where('is_active', true);
+            }
+
+            if ($sameTutorActiveQuery->exists()) {
+                return response()->json([
+                    'message' => 'This student is already actively assigned to this tutor.',
+                ], 409);
+            }
+
+            /*
+            Desactivamos cualquier asignación activa anterior del estudiante.
+            Así evitamos que tenga dos tutores activos al mismo tiempo.
+            */
+            $inactiveData = [];
+
+            if (Schema::hasColumn('student_tutor_assignments', 'status')) {
+                $inactiveData['status'] = 'inactive';
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'is_active')) {
+                $inactiveData['is_active'] = false;
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'ended_at')) {
+                $inactiveData['ended_at'] = now();
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'end_date')) {
+                $inactiveData['end_date'] = now()->toDateString();
+            }
+
+            if (!empty($inactiveData)) {
+                $activeAssignmentsQuery->update($inactiveData);
+            }
+
+            /*
+            Creamos la nueva asignación activa.
+            */
+            $newAssignmentData = [
+                'student_id' => $studentId,
+                'tutor_id' => $tutorId,
+            ];
+
+            if (Schema::hasColumn('student_tutor_assignments', 'status')) {
+                $newAssignmentData['status'] = 'active';
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'is_active')) {
+                $newAssignmentData['is_active'] = true;
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'assigned_at')) {
+                $newAssignmentData['assigned_at'] = now();
+            }
+
+            if (Schema::hasColumn('student_tutor_assignments', 'start_date')) {
+                $newAssignmentData['start_date'] = now()->toDateString();
+            }
+
+            $assignment = StudentTutorAssignment::create($newAssignmentData);
+
             return response()->json([
-                'message' => 'The selected student user account is not active.',
-            ], 422);
-        }
-
-        /*
-         * No se debe asignar un tutor cuya cuenta esté inactiva.
-         * Esto asegura que solo tutores activos reciban estudiantes.
-         */
-        if (!$tutor->user || $tutor->user->status !== 'active') {
-            return response()->json([
-                'message' => 'The selected tutor user account is not active.',
-            ], 422);
-        }
-
-        /*
-         * Evita duplicar una asignación activa entre el mismo estudiante y tutor.
-         * Si ya existe una asignación activa igual, se responde con conflicto.
-         */
-        $alreadyAssigned = StudentTutorAssignment::where('student_id', $request->student_id)
-            ->where('tutor_id', $request->tutor_id)
-            ->where('status', 'active')
-            ->exists();
-
-        if ($alreadyAssigned) {
-            return response()->json([
-                'message' => 'This student is already actively assigned to this tutor.',
-            ], 409);
-        }
-
-        /*
-         * Transacción para asegurar integridad.
-         * Si algo falla, Laravel revierte la operación.
-         */
-        $assignment = DB::transaction(function () use ($request) {
-            return StudentTutorAssignment::create([
-                'student_id' => $request->student_id,
-                'tutor_id' => $request->tutor_id,
-                'assigned_by' => $request->user()->id,
-                'status' => $request->status ?? 'active',
-                'assigned_at' => now(),
-            ]);
+                'message' => 'Student assigned to tutor successfully.',
+                'assignment' => $assignment,
+            ], 201);
         });
-
-        return response()->json([
-            'message' => 'Student assigned to tutor successfully.',
-            'assignment' => $assignment->load([
-                'student.user',
-                'tutor.user',
-                'assignedBy',
-            ]),
-        ], 201);
     }
 }
