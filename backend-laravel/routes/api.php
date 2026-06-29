@@ -137,6 +137,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Lista las alertas de los estudiantes asignados al tutor autenticado.
     Route::get('/tutor/alerts', [AlertController::class, 'index']);
 
+    Route::get('/tutor/support-staff', [UserController::class, 'supportStaffOptions']);
+
+    
+
     // Marca una alerta como revisada.
     Route::patch('/tutor/alerts/{alert}/review', [AlertController::class, 'review']);
     /*

@@ -1,0 +1,219 @@
+/*
+  Acciones del encabezado de canalización.
+*/
+.referral-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/*
+  Grid principal de canalización.
+*/
+.referral-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 390px;
+  gap: 22px;
+  align-items: start;
+}
+
+/*
+  Formulario de canalización.
+*/
+.referral-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/*
+  Textarea del formulario.
+*/
+.referral-textarea {
+  min-height: 120px;
+  padding: 14px;
+  resize: vertical;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+/*
+  Estado focus del textarea.
+*/
+.referral-textarea:focus {
+  border-color: #0b63f6;
+}
+
+/*
+  Tarjeta lateral de resumen.
+*/
+.referral-summary-card {
+  position: sticky;
+  top: 100px;
+}
+
+/*
+  Caja principal de alerta.
+*/
+.referral-alert-box {
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+/*
+  Título de la alerta.
+*/
+.referral-alert-box strong {
+  display: block;
+  color: #9a3412;
+}
+
+/*
+  Texto de la alerta.
+*/
+.referral-alert-box span {
+  display: block;
+  margin-top: 6px;
+  color: #c2410c;
+  line-height: 1.5;
+}
+
+/*
+  Sección de dato corto.
+*/
+.referral-summary-section {
+  margin-top: 16px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5eaf3;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+/*
+  Label de sección.
+*/
+.referral-summary-section span {
+  color: #64748b;
+  font-weight: 800;
+}
+
+/*
+  Tarjeta de estudiante.
+*/
+.referral-student-card {
+  margin-top: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #e5eaf3;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+/*
+  Avatar del estudiante.
+*/
+.referral-student-avatar {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #0b63f6;
+  background: #dbeafe;
+}
+
+/*
+  Nombre del estudiante.
+*/
+.referral-student-card strong {
+  display: block;
+  color: #0f172a;
+}
+
+/*
+  Correo del estudiante.
+*/
+.referral-student-card span {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/*
+  Chips académicos.
+*/
+.referral-student-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/*
+  Chip individual.
+*/
+.referral-student-tags small {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/*
+  Responsive.
+*/
+@media (max-width: 1100px) {
+  .referral-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .referral-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .referral-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .referral-header-actions button {
+    width: 100%;
+  }
+
+  .referral-student-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .referral-student-card span {
+    justify-content: center;
+  }
+
+  .referral-student-tags {
+    justify-content: center;
+  }
+}

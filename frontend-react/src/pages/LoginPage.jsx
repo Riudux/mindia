@@ -120,7 +120,7 @@ function LoginPage() {
         return;
       }
 
-      if (userRole === "support") {
+      if (userRole === "support" || userRole === "support_staff") {
         navigate("/support/dashboard");
         return;
       }

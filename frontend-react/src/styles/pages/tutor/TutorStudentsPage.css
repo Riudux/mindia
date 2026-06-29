@@ -1,0 +1,70 @@
+/*
+  Panel de filtros para la pantalla Mis estudiantes.
+*/
+.tutor-students-filters {
+  margin-bottom: 22px;
+}
+
+/*
+  Grid de filtros.
+*/
+.tutor-students-filters-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 220px 180px;
+  gap: 14px;
+}
+
+/*
+  Selects de la sección de filtros.
+*/
+.tutor-students-filters-grid select {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+}
+
+/*
+  Botón para limpiar filtros.
+*/
+.clear-student-filters-button {
+  margin-top: 16px;
+}
+
+/*
+  Separación superior de la tabla.
+*/
+.tutor-students-table-card {
+  margin-top: 22px;
+}
+
+/*
+  Evita que la columna de carrera rompa visualmente la tabla.
+*/
+.tutor-students-table-card .data-table td:nth-child(3) {
+  max-width: 340px;
+}
+
+/*
+  Responsive de filtros.
+*/
+@media (max-width: 1200px) {
+  .tutor-students-filters-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .tutor-students-filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clear-student-filters-button {
+    width: 100%;
+  }
+}

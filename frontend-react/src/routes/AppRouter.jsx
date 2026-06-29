@@ -23,6 +23,13 @@ import AdminUsersPage from "../pages/admin/AdminUsersPage";
 import AdminCreateUserPage from "../pages/admin/AdminCreateUserPage";
 import AdminEditUserPage from "../pages/admin/AdminEditUserPage";
 import AdminAssignmentsPage from "../pages/admin/AdminAssignmentsPage";
+import TutorStudentsPage from "../pages/tutor/TutorStudentsPage";
+import TutorStudentDetailPage from "../pages/tutor/TutorStudentDetailPage";
+import TutorAlertsPage from "../pages/tutor/TutorAlertsPage";
+import TutorAlertDetailPage from "../pages/tutor/TutorAlertDetailPage";
+import TutorReferralPage from "../pages/tutor/TutorReferralPage";
+import SupportReferralsPage from "../pages/support/SupportReferralsPage";
+import SupportReferralDetailPage from "../pages/support/SupportReferralDetailPage";
 
 function AppRouter() {
   return (
@@ -60,17 +67,6 @@ function AppRouter() {
                 <AdminUsersPage />
                 </ProtectedRoute>
             }
-        />
-
-        {/* Ruta protegida del personal de soporte.
-            Solo usuarios con rol support pueden entrar. */}
-        <Route
-          path="/support/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["support"]}>
-              <SupportDashboardPage />
-            </ProtectedRoute>
-          }
         />
 
         {/* Ruta protegida del estudiante.
@@ -120,6 +116,96 @@ function AppRouter() {
             <ProtectedRoute allowedRoles={["tutor"]}>
               <DashboardLayout>
                 <TutorDashboardPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tutor/students"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorStudentsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tutor/students/:id"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorStudentDetailPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tutor/alerts"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorAlertsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tutor/alerts/:id"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorAlertDetailPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tutor/alerts/:id/referral"
+          element={
+            <ProtectedRoute allowedRoles={["tutor"]}>
+              <DashboardLayout>
+                <TutorReferralPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Ruta protegida del personal de soporte.
+            Solo usuarios con rol support pueden entrar. */}
+        <Route
+          path="/support/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["support", "support_staff"]}>
+              <DashboardLayout>
+                <SupportDashboardPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/support/referrals"
+          element={
+            <ProtectedRoute allowedRoles={["support", "support_staff"]}>
+              <DashboardLayout>
+                <SupportReferralsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/support/referrals/:id"
+          element={
+            <ProtectedRoute allowedRoles={["support", "support_staff"]}>
+              <DashboardLayout>
+                <SupportReferralDetailPage />
               </DashboardLayout>
             </ProtectedRoute>
           }

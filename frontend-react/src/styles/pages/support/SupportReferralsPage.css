@@ -1,0 +1,130 @@
+/*
+  Panel de filtros de casos canalizados.
+*/
+.support-referrals-filters {
+  margin-bottom: 22px;
+}
+
+/*
+  Encabezado del panel de filtros.
+*/
+.support-referrals-filter-header {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/*
+  Grid de filtros.
+*/
+.support-referrals-filters-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 240px 220px;
+  gap: 14px;
+}
+
+/*
+  Selects de filtros.
+*/
+.support-referrals-filters-grid select {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+}
+
+/*
+  Tarjeta principal de tabla.
+*/
+.support-referrals-table-card {
+  margin-top: 22px;
+}
+
+/*
+  Resumen pequeño de prioridad alta.
+*/
+.support-priority-summary {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #ef4444;
+  font-weight: 900;
+}
+
+/*
+  Acciones de cada caso.
+*/
+.support-referral-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/*
+  Botones de acción con icono.
+*/
+.support-referral-actions .table-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/*
+  Limita ancho del motivo para evitar tabla rota.
+*/
+.support-referrals-table-card .data-table td:nth-child(3) {
+  max-width: 360px;
+  line-height: 1.5;
+}
+
+/*
+  Badge naranja para prioridad media o estado pendiente.
+*/
+.badge.orange {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/*
+  Estado deshabilitado.
+*/
+.support-referral-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/*
+  Responsive.
+*/
+@media (max-width: 1100px) {
+  .support-referrals-filter-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .support-referrals-filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .support-referrals-filter-header button {
+    width: 100%;
+  }
+
+  .support-priority-summary {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,279 @@
+/*
+  Acciones del encabezado del detalle.
+*/
+.student-detail-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/*
+  Tarjeta superior del perfil del estudiante.
+*/
+.student-profile-card {
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+}
+
+/*
+  Avatar grande del estudiante.
+*/
+.student-profile-avatar {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #0b63f6;
+}
+
+/*
+  Contenedor de información principal.
+*/
+.student-profile-info {
+  min-width: 0;
+}
+
+/*
+  Nombre del estudiante.
+*/
+.student-profile-info h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+/*
+  Correo del estudiante.
+*/
+.student-profile-info p {
+  margin: 0;
+  color: #64748b;
+  font-weight: 700;
+}
+
+/*
+  Etiquetas académicas del estudiante.
+*/
+.student-profile-tags {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/*
+  Chip individual.
+*/
+.student-profile-tags span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/*
+  Grid principal del detalle.
+*/
+.student-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 360px;
+  gap: 22px;
+  align-items: start;
+}
+
+/*
+  Segundo grid del detalle.
+*/
+.secondary-grid {
+  margin-top: 22px;
+}
+
+/*
+  Título de nivel de riesgo dentro de métrica.
+*/
+.risk-level-title {
+  font-size: 22px !important;
+  text-transform: capitalize;
+}
+
+/*
+  Tarjeta de riesgo institucional.
+*/
+.student-risk-card {
+  position: sticky;
+  top: 100px;
+}
+
+/*
+  Bloque principal de riesgo.
+*/
+.student-risk-main {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+/*
+  Texto secundario del bloque de riesgo.
+*/
+.student-risk-main span {
+  display: block;
+  margin-bottom: 8px;
+  color: #9a3412;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/*
+  Recomendación institucional.
+*/
+.student-risk-recommendation {
+  margin-top: 18px;
+}
+
+/*
+  Texto de recomendación.
+*/
+.student-risk-recommendation p {
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/*
+  Lista de resumen por emoción.
+*/
+.emotion-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/*
+  Fila del resumen emocional.
+*/
+.emotion-summary-row {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5eaf3;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+/*
+  Nombre de emoción.
+*/
+.emotion-summary-row span {
+  color: #334155;
+  font-weight: 800;
+}
+
+/*
+  Total por emoción.
+*/
+.emotion-summary-row strong {
+  color: #0b63f6;
+  font-size: 20px;
+}
+
+/*
+  Lista de tendencias.
+*/
+.trend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/*
+  Elemento individual de tendencia.
+*/
+.trend-item {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5eaf3;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0b63f6;
+}
+
+/*
+  Título de tendencia.
+*/
+.trend-item strong {
+  display: block;
+  color: #0f172a;
+}
+
+/*
+  Valor de tendencia.
+*/
+.trend-item span {
+  display: block;
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/*
+  Responsive.
+*/
+@media (max-width: 1100px) {
+  .student-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-risk-card {
+    position: static;
+  }
+
+  .student-profile-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .student-profile-card .primary-action-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .student-detail-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .student-detail-header-actions button {
+    width: 100%;
+  }
+
+  .student-profile-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .student-profile-avatar {
+    margin: 0 auto;
+  }
+
+  .student-profile-tags {
+    justify-content: center;
+  }
+}

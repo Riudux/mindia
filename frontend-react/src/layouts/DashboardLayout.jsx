@@ -127,13 +127,13 @@ const NAV_ITEMS = {
       label: "Mis estudiantes",
       path: "/tutor/students",
       icon: Users,
-      ready: false,
+      ready: true,
     },
     {
       label: "Alertas",
       path: "/tutor/alerts",
       icon: Bell,
-      ready: false,
+      ready: true,
     },
     {
       label: "Seguimiento",
@@ -171,7 +171,7 @@ const NAV_ITEMS = {
       label: "Casos canalizados",
       path: "/support/referrals",
       icon: ClipboardList,
-      ready: false,
+      ready: true,
     },
     {
       label: "Estudiantes en seguimiento",

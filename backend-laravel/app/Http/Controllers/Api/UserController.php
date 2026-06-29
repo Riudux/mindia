@@ -555,4 +555,41 @@ class UserController extends Controller
             'user' => $user->load('role'),
         ]);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Listado de personal de apoyo
+    |--------------------------------------------------------------------------
+    |
+    | Devuelve el personal de apoyo disponible para canalizaciones.
+    | Este listado se usa en React para que el tutor pueda seleccionar
+    | dinámicamente a quién canalizar un caso.
+    |
+    */
+    public function supportStaffOptions()
+    {
+        $supportStaff = SupportStaff::with('user')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function ($staff) {
+                return [
+                    'id' => $staff->id,
+                    'user_id' => $staff->user_id,
+                    'name' => $staff->user->name ?? 'Personal de apoyo',
+                    'email' => $staff->user->email ?? 'Sin correo',
+                    'employee_key' => $staff->employee_key ?? null,
+                    'area' => $staff->area ?? null,
+                    'department' => $staff->department ?? null,
+                    'is_active' => $staff->user->is_active ?? true,
+                ];
+            })
+            ->filter(function ($staff) {
+                return $staff['is_active'] === true;
+            })
+            ->values();
+
+        return response()->json([
+            'support_staff' => $supportStaff,
+        ]);
+    }
 }

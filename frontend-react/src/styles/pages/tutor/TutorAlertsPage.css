@@ -1,0 +1,88 @@
+/*
+  Panel de filtros del monitor de alertas.
+*/
+.tutor-alerts-filters {
+  margin-bottom: 22px;
+}
+
+/*
+  Grid de filtros.
+*/
+.tutor-alerts-filters-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 240px 220px;
+  gap: 14px;
+}
+
+/*
+  Selects de filtros.
+*/
+.tutor-alerts-filters-grid select {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+}
+
+/*
+  Separación superior de la tabla.
+*/
+.tutor-alerts-table-card {
+  margin-top: 22px;
+}
+
+/*
+  Limita el ancho de la descripción para evitar que rompa la tabla.
+*/
+.tutor-alerts-table-card .data-table td:nth-child(2) {
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+/*
+  Badge naranja para estados pendientes o riesgo medio.
+*/
+.badge.orange {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/*
+  Icono rojo en métricas de riesgo alto.
+*/
+.metric-icon.red {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+/*
+  Estado deshabilitado de botones dentro de alertas.
+*/
+.tutor-alerts-table-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/*
+  Celda de acciones dentro de la tabla de alertas.
+*/
+.alert-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/*
+  Responsive.
+*/
+@media (max-width: 1000px) {
+  .tutor-alerts-filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
