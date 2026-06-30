@@ -2,40 +2,27 @@
 import { Navigate } from "react-router-dom";
 
 /*
-  Componente ProtectedRoute
+  ProtectedRoute
 
-  Sirve para proteger rutas privadas.
-  Valida tres cosas:
+  Protege rutas privadas del panel web.
+  Valida:
   1. Que exista token.
   2. Que exista rol.
-  3. Que el rol del usuario esté permitido para entrar a esa ruta.
+  3. Que el rol tenga permiso para entrar a la ruta solicitada.
 */
 function ProtectedRoute({ allowedRoles, children }) {
-  // Obtenemos el token guardado después del login.
   const token = localStorage.getItem("mindia_token");
+  const storedRole = localStorage.getItem("mindia_role");
+  const role = String(storedRole || "").trim().toLowerCase();
 
-  // Obtenemos el rol guardado después del login.
-  const role = localStorage.getItem("mindia_role");
-
-  // Si no hay token, significa que el usuario no inició sesión.
-  // Entonces lo mandamos al login.
-  if (!token) {
+  if (!token || !role) {
     return <Navigate to="/login" replace />;
   }
 
-  // Si no hay rol, la sesión está incompleta o corrupta.
-  // También lo mandamos al login.
-  if (!role) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // Si el rol del usuario no está dentro de los roles permitidos,
-  // lo mandamos a la pantalla de acceso denegado.
   if (!allowedRoles.includes(role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Si todo está correcto, mostramos la pantalla solicitada.
   return children;
 }
 

@@ -291,7 +291,6 @@ const SupportReferralAttentionPage = () => {
 
       const response = await getSupportReferralFollowupsRequest(id);
 
-      console.log("Atenciones del caso:", response);
 
       const followupsList = extractList(response, ["followups"]);
 

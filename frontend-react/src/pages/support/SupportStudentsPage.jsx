@@ -253,7 +253,6 @@ const SupportStudentsPage = () => {
 
       const response = await getSupportReferralsRequest();
 
-      console.log("Estudiantes en seguimiento - referrals:", response);
 
       const referralsList = extractList(response, ["referrals"]);
 

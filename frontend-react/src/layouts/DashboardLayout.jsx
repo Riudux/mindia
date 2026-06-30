@@ -14,9 +14,7 @@ import {
   LogOut,
   Search,
   Settings,
-  Shield,
   User,
-  UserPlus,
   Users,
 } from "lucide-react";
 
@@ -50,11 +48,6 @@ const ROLE_CONFIG = {
     panelName: "Área de apoyo",
     profileRole: "Área de apoyo",
     searchPlaceholder: "Buscar estudiante, matrícula o caso...",
-  },
-  student: {
-    panelName: "Student Panel",
-    profileRole: "Estudiante",
-    searchPlaceholder: "Buscar historial, registro o apoyo...",
   },
 };
 
@@ -198,38 +191,6 @@ const NAV_ITEMS = {
       ready: false,
     },
   ],
-  student: [
-    {
-      label: "Dashboard",
-      path: "/student/dashboard",
-      icon: Home,
-      ready: true,
-    },
-    {
-      label: "Registro emocional",
-      path: "/student/emotional-records",
-      icon: ClipboardList,
-      ready: false,
-    },
-    {
-      label: "Historial",
-      path: "/student/history",
-      icon: FileText,
-      ready: false,
-    },
-    {
-      label: "Apoyo institucional",
-      path: "/student/support",
-      icon: Shield,
-      ready: false,
-    },
-    {
-      label: "Perfil",
-      path: "/student/profile",
-      icon: User,
-      ready: false,
-    },
-  ],
 };
 
 /*
@@ -273,13 +234,13 @@ function DashboardLayout({ children }) {
   const user = getStoredUser();
 
   // Obtenemos el rol guardado después del login.
-  const role = localStorage.getItem("mindia_role") || "student";
+  const role = localStorage.getItem("mindia_role") || "admin";
 
   // Obtenemos la configuración visual del rol actual.
-  const roleConfig = ROLE_CONFIG[role] || ROLE_CONFIG.student;
+  const roleConfig = ROLE_CONFIG[role] || ROLE_CONFIG.admin;
 
   // Obtenemos los elementos del menú según el rol actual.
-  const navItems = NAV_ITEMS[role] || NAV_ITEMS.student;
+  const navItems = NAV_ITEMS[role] || NAV_ITEMS.admin;
 
   // Función para cerrar sesión localmente.
   const handleLogout = () => {

@@ -1,362 +1,425 @@
-// Importamos useEffect para cargar usuarios al entrar a la pantalla.
-// Importamos useMemo para calcular listas filtradas sin recalcular innecesariamente.
-// Importamos useState para manejar datos, filtros, errores y carga.
-// También importamos useNavigate para movernos a la pantalla de crear usuario.
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// Importamos iconos visuales para cards, filtros y acciones.
 import {
   GraduationCap,
   Search,
   ShieldCheck,
   UserPlus,
-  Users,
-  UserX,
+  UserRoundX,
+  UsersRound,
 } from "lucide-react";
 
-// Importamos el layout base del dashboard.
-import DashboardLayout from "../../layouts/DashboardLayout";
-
-// Importamos los estilos específicos de la página de administración de usuarios.
-import "../../styles/pages/admin/AdminUsersPage.css";
-
-// Importamos la función que consume GET /api/users.
 import { getUsersRequest } from "../../api/adminApi";
 
+import "../../styles/pages/admin/AdminUsersPage.css";
 
 /*
-  ROLE_LABELS
+  Pantalla de gestión de usuarios.
 
-  Convierte los role_id del backend a nombres visibles.
-  Según tu backend:
-  1 = admin
-  2 = tutor
-  3 = support
-  4 = student
+  Esta vista permite al administrador consultar usuarios registrados,
+  filtrarlos por nombre/correo, rol y estado, además de navegar hacia
+  la creación o edición de usuarios.
 */
-const ROLE_LABELS = {
-  1: "Admin",
-  2: "Tutor",
-  3: "Apoyo",
-  4: "Estudiante",
-};
-
-/*
-  getUserRole
-
-  Obtiene el rol del usuario aunque el backend lo mande de distintas formas:
-  - user.role.name
-  - user.role como texto
-  - user.role_id como número
-*/
-const getUserRole = (user) => {
-  if (user?.role?.name) {
-    return user.role.name;
-  }
-
-  if (typeof user?.role === "string") {
-    return user.role;
-  }
-
-  if (user?.role_id) {
-    return ROLE_LABELS[user.role_id] || "Sin rol";
-  }
-
-  return "Sin rol";
-};
-
-/*
-  getUserStatus
-
-  Obtiene el estado del usuario.
-  Soporta nombres distintos por si el backend manda:
-  - is_active
-  - active
-  - status
-*/
-const getUserStatus = (user) => {
-  if (typeof user?.is_active === "boolean") {
-    return user.is_active ? "Activo" : "Inactivo";
-  }
-
-  if (typeof user?.active === "boolean") {
-    return user.active ? "Activo" : "Inactivo";
-  }
-
-  if (user?.status) {
-    return user.status;
-  }
-
-  return "Activo";
-};
-
-/*
-  getUsersArray
-
-  Normaliza la respuesta del backend.
-
-  Esto evita errores si el backend devuelve:
-  - un arreglo directo
-  - { users: [...] }
-  - { data: [...] }
-*/
-const getUsersArray = (responseData) => {
-  if (Array.isArray(responseData)) {
-    return responseData;
-  }
-
-  if (Array.isArray(responseData?.users)) {
-    return responseData.users;
-  }
-
-  if (Array.isArray(responseData?.data)) {
-    return responseData.data;
-  }
-
-  return [];
-};
-
-/*
-  getRoleBadgeClass
-
-  Asigna una clase CSS según el rol.
-  Esto sirve para pintar badges de colores.
-*/
-const getRoleBadgeClass = (role) => {
-  const normalizedRole = role.toLowerCase();
-
-  if (normalizedRole.includes("admin")) {
-    return "badge blue";
-  }
-
-  if (normalizedRole.includes("tutor")) {
-    return "badge green";
-  }
-
-  if (normalizedRole.includes("apoyo") || normalizedRole.includes("support")) {
-    return "badge purple";
-  }
-
-  if (normalizedRole.includes("estudiante") || normalizedRole.includes("student")) {
-    return "badge light-blue";
-  }
-
-  return "badge";
-};
-
-/*
-  getStatusBadgeClass
-
-  Asigna color al estado del usuario.
-*/
-const getStatusBadgeClass = (status) => {
-  const normalizedStatus = status.toLowerCase();
-
-  if (normalizedStatus.includes("activo") || normalizedStatus.includes("active")) {
-    return "badge green";
-  }
-
-  return "badge red";
-};
-
-function AdminUsersPage() {
-  // Hook para navegar a otras pantallas del panel admin.
+const AdminUsersPage = () => {
+  /*
+    Hook de navegación para movernos entre pantallas administrativas.
+  */
   const navigate = useNavigate();
-  
-  // Estado donde guardamos todos los usuarios del backend.
+
+  /*
+    Lista de usuarios cargados desde el backend.
+  */
   const [users, setUsers] = useState([]);
 
-  // Estado para saber si la pantalla está cargando.
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Estado para mostrar errores si falla la petición.
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Filtro de texto para buscar por nombre o correo.
+  /*
+    Estados de filtros.
+  */
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Filtro por rol.
   const [roleFilter, setRoleFilter] = useState("all");
-
-  // Filtro por estado.
   const [statusFilter, setStatusFilter] = useState("all");
 
   /*
-    loadUsers
+    Estados visuales de carga y error.
+  */
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    Carga los usuarios reales desde el backend Laravel.
-    Consume GET /api/users.
+  /*
+    Extrae la lista de usuarios desde diferentes estructuras posibles
+    del backend.
+  */
+  const extractUsers = (response) => {
+    if (Array.isArray(response)) {
+      return response;
+    }
+
+    if (Array.isArray(response?.users)) {
+      return response.users;
+    }
+
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+
+    return [];
+  };
+
+  /*
+    Obtiene el rol real del usuario de forma normalizada.
+
+    Soporta respuestas como:
+    - user.role.name
+    - user.role
+    - user.role_name
+    - user.role_id
+
+    Retorna:
+    - admin
+    - student
+    - tutor
+    - support
+  */
+  const getUserRole = (user) => {
+    const roleFromObject = user?.role?.name;
+    const roleFromText = user?.role_name || user?.role;
+
+    const normalizedRole = String(roleFromObject || roleFromText || "")
+      .trim()
+      .toLowerCase();
+
+    if (normalizedRole === "admin" || normalizedRole === "administrator") {
+      return "admin";
+    }
+
+    if (normalizedRole === "student" || normalizedRole === "estudiante") {
+      return "student";
+    }
+
+    if (normalizedRole === "tutor") {
+      return "tutor";
+    }
+
+    if (
+      normalizedRole === "support" ||
+      normalizedRole === "support_staff" ||
+      normalizedRole === "apoyo"
+    ) {
+      return "support";
+    }
+
+    /*
+      Mapeo por ID de rol según la base actual de MindIA:
+      1 = admin
+      2 = tutor
+      3 = support
+      4 = student
+    */
+    const roleId = Number(user?.role_id);
+
+    if (roleId === 1) {
+      return "admin";
+    }
+
+    if (roleId === 2) {
+      return "tutor";
+    }
+
+    if (roleId === 3) {
+      return "support";
+    }
+
+    if (roleId === 4) {
+      return "student";
+    }
+
+    return "unknown";
+  };
+
+  /*
+    Traduce el rol normalizado a una etiqueta visible en español.
+  */
+  const getUserRoleLabel = (user) => {
+    const role = getUserRole(user);
+
+    if (role === "admin") {
+      return "Admin";
+    }
+
+    if (role === "student") {
+      return "Estudiante";
+    }
+
+    if (role === "tutor") {
+      return "Tutor";
+    }
+
+    if (role === "support") {
+      return "Apoyo";
+    }
+
+    return "Sin rol";
+  };
+
+  /*
+    Devuelve la clase visual del badge de rol.
+  */
+  const getUserRoleBadgeClass = (user) => {
+    const role = getUserRole(user);
+
+    if (role === "admin") {
+      return "badge blue";
+    }
+
+    if (role === "student") {
+      return "badge light-blue";
+    }
+
+    if (role === "tutor") {
+      return "badge green";
+    }
+
+    if (role === "support") {
+      return "badge purple";
+    }
+
+    return "badge";
+  };
+
+  /*
+    Obtiene el estado real del usuario.
+
+    Se prioriza is_active porque es booleano.
+    Después se revisa status porque viene como texto desde el backend.
+  */
+  const getUserStatus = (user) => {
+    if (
+      user?.is_active === false ||
+      user?.is_active === 0 ||
+      user?.is_active === "0" ||
+      user?.is_active === "false"
+    ) {
+      return "inactive";
+    }
+
+    const status = String(user?.status || "").trim().toLowerCase();
+
+    if (status === "inactive" || status === "disabled") {
+      return "inactive";
+    }
+
+    return "active";
+  };
+
+  /*
+    Traduce el estado a español.
+  */
+  const getUserStatusLabel = (user) => {
+    return getUserStatus(user) === "active" ? "Activo" : "Inactivo";
+  };
+
+  /*
+    Devuelve la clase visual del estado.
+  */
+  const getUserStatusBadgeClass = (user) => {
+    return getUserStatus(user) === "active" ? "badge green" : "badge red";
+  };
+
+  /*
+    Obtiene la primera letra del nombre para mostrarla en el avatar.
+  */
+  const getUserInitial = (user) => {
+    return String(user?.name || "U").charAt(0).toUpperCase();
+  };
+
+  /*
+    Carga los usuarios desde el backend.
   */
   const loadUsers = async () => {
     try {
-      // Activamos carga y limpiamos errores.
       setIsLoading(true);
       setErrorMessage("");
 
-      // Consumimos el endpoint de usuarios.
-      const responseData = await getUsersRequest();
+      const response = await getUsersRequest();
+      const usersList = extractUsers(response);
 
-      // Normalizamos la respuesta para obtener siempre un arreglo.
-      const usersArray = getUsersArray(responseData);
-
-      // Guardamos los usuarios en el estado.
-      setUsers(usersArray);
-
-      // Dejamos evidencia en consola para revisar estructura.
-      console.log("Usuarios cargados:", responseData);
+      setUsers(usersList);
     } catch (error) {
-      // Tomamos mensaje del backend si existe.
       const backendMessage =
-        error.response?.data?.message || "No se pudo cargar la lista de usuarios.";
+        error.response?.data?.message || "No se pudieron cargar los usuarios.";
 
-      // Guardamos el mensaje para mostrarlo en pantalla.
       setErrorMessage(backendMessage);
 
-      // Mostramos detalle técnico en consola.
-      console.error("Error cargando usuarios:", error.response?.data || error.message);
+      console.error(
+        "Error cargando usuarios:",
+        error.response?.data || error.message
+      );
     } finally {
-      // Finalizamos la carga.
       setIsLoading(false);
     }
   };
 
   /*
-    useEffect
-
-    Carga los usuarios cuando la pantalla se abre por primera vez.
+    Carga inicial de usuarios.
   */
   useEffect(() => {
     loadUsers();
   }, []);
 
   /*
-    filteredUsers
+    Usuarios con rol estudiante.
+  */
+  const studentUsers = useMemo(() => {
+    return users.filter((user) => getUserRole(user) === "student");
+  }, [users]);
 
-    Aplica búsqueda, filtro por rol y filtro por estado.
+  /*
+    Usuarios con rol tutor.
+  */
+  const tutorUsers = useMemo(() => {
+    return users.filter((user) => getUserRole(user) === "tutor");
+  }, [users]);
+
+  /*
+    Usuarios con rol support/apoyo.
+  */
+  const supportUsers = useMemo(() => {
+    return users.filter((user) => getUserRole(user) === "support");
+  }, [users]);
+
+  /*
+    Usuarios inactivos.
+  */
+  const inactiveUsers = useMemo(() => {
+    return users.filter((user) => getUserStatus(user) === "inactive");
+  }, [users]);
+
+  /*
+    Aplica filtros por búsqueda, rol y estado.
   */
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      // Convertimos texto de búsqueda a minúsculas.
-      const search = searchTerm.toLowerCase();
+    const normalizedSearch = searchTerm.trim().toLowerCase();
 
-      // Obtenemos rol y estado del usuario.
+    return users.filter((user) => {
       const role = getUserRole(user);
       const status = getUserStatus(user);
 
-      // Validamos si coincide con nombre o correo.
+      const searchableText = [
+        user?.name,
+        user?.email,
+        getUserRoleLabel(user),
+        getUserStatusLabel(user),
+      ]
+        .join(" ")
+        .toLowerCase();
+
       const matchesSearch =
-        user?.name?.toLowerCase().includes(search) ||
-        user?.email?.toLowerCase().includes(search);
+        !normalizedSearch || searchableText.includes(normalizedSearch);
 
-      // Validamos filtro por rol.
-      const matchesRole =
-        roleFilter === "all" || role.toLowerCase().includes(roleFilter);
+      const matchesRole = roleFilter === "all" || role === roleFilter;
 
-      // Validamos filtro por estado.
       const matchesStatus =
-        statusFilter === "all" || status.toLowerCase().includes(statusFilter);
+        statusFilter === "all" || status === statusFilter;
 
       return matchesSearch && matchesRole && matchesStatus;
     });
   }, [users, searchTerm, roleFilter, statusFilter]);
 
-  // Métricas superiores.
-  const totalUsers = users.length;
+  /*
+    Estado de carga inicial.
+  */
+  if (isLoading) {
+    return (
+      <section>
+        <div className="page-header">
+          <p className="breadcrumb">Usuarios</p>
+          <h2>Gestión de usuarios</h2>
+          <p>Cargando usuarios registrados...</p>
+        </div>
 
-  const totalStudents = users.filter((user) =>
-    getUserRole(user).toLowerCase().includes("estudiante") ||
-    getUserRole(user).toLowerCase().includes("student")
-  ).length;
-
-  const totalTutors = users.filter((user) =>
-    getUserRole(user).toLowerCase().includes("tutor")
-  ).length;
-
-  const inactiveUsers = users.filter((user) =>
-    getUserStatus(user).toLowerCase().includes("inactivo") ||
-    getUserStatus(user).toLowerCase().includes("inactive")
-  ).length;
+        <div className="panel-card">
+          <div className="placeholder-box">Cargando información...</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <DashboardLayout>
-      <section className="page-header page-header-with-actions">
+    <section>
+      <div className="page-header-with-actions page-header">
         <div>
           <p className="breadcrumb">Usuarios</p>
-
           <h2>Gestión de usuarios</h2>
-
-          <p>
-            Administra estudiantes, tutores, administradores y personal de apoyo.
-          </p>
+          <p>Administra estudiantes, tutores, administradores y personal de apoyo.</p>
         </div>
 
         <button
-          className="primary-action-button"
           type="button"
+          className="primary-action-button"
           onClick={() => navigate("/admin/users/create")}
         >
-          <UserPlus size={20} />
+          <UserPlus size={18} />
           Nuevo usuario
         </button>
-      </section>
+      </div>
 
-      <section className="metrics-grid">
+      {errorMessage && <div className="form-alert error">{errorMessage}</div>}
+
+      <div className="metrics-grid">
         <article className="metric-card">
           <div className="metric-icon blue">
-            <Users size={30} />
+            <UsersRound size={28} />
           </div>
 
           <div>
             <span>Total usuarios</span>
-            <h3>{totalUsers}</h3>
+            <h3>{users.length}</h3>
             <small>Todos los roles</small>
           </div>
         </article>
 
         <article className="metric-card">
           <div className="metric-icon green">
-            <GraduationCap size={30} />
+            <GraduationCap size={28} />
           </div>
 
           <div>
             <span>Estudiantes</span>
-            <h3>{totalStudents}</h3>
+            <h3>{studentUsers.length}</h3>
             <small>Registrados</small>
           </div>
         </article>
 
         <article className="metric-card">
           <div className="metric-icon purple">
-            <ShieldCheck size={30} />
+            <ShieldCheck size={28} />
           </div>
 
           <div>
             <span>Tutores</span>
-            <h3>{totalTutors}</h3>
+            <h3>{tutorUsers.length}</h3>
             <small>Activos</small>
           </div>
         </article>
 
         <article className="metric-card">
           <div className="metric-icon orange">
-            <UserX size={30} />
+            <UserRoundX size={28} />
           </div>
 
           <div>
             <span>Cuentas inactivas</span>
-            <h3>{inactiveUsers}</h3>
+            <h3>{inactiveUsers.length}</h3>
             <small>Sin actividad</small>
           </div>
         </article>
-      </section>
+      </div>
 
-      <section className="panel-card filters-panel">
+      <div className="panel-card users-filters-card">
         <h3>Filtros de búsqueda</h3>
 
-        <div className="filters-grid">
+        <div className="users-filters-grid">
           <div className="filter-input">
-            <Search size={19} />
+            <Search size={18} />
 
             <input
               type="text"
@@ -372,10 +435,9 @@ function AdminUsersPage() {
           >
             <option value="all">Rol: Todos</option>
             <option value="admin">Admin</option>
+            <option value="student">Estudiante</option>
             <option value="tutor">Tutor</option>
             <option value="support">Apoyo</option>
-            <option value="estudiante">Estudiante</option>
-            <option value="student">Student</option>
           </select>
 
           <select
@@ -383,33 +445,27 @@ function AdminUsersPage() {
             onChange={(event) => setStatusFilter(event.target.value)}
           >
             <option value="all">Estado: Todos</option>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="active">Activo</option>
+            <option value="inactive">Inactivo</option>
           </select>
         </div>
-      </section>
+      </div>
 
-      <section className="panel-card">
+      <div className="panel-card users-table-card">
         <div className="table-header">
           <div>
             <h3>Usuarios registrados</h3>
             <p>
-              Mostrando {filteredUsers.length} de {totalUsers} usuarios.
+              Mostrando {filteredUsers.length} de {users.length} usuarios.
             </p>
           </div>
         </div>
 
-        {isLoading && <p>Cargando usuarios...</p>}
-
-        {errorMessage && (
-          <p style={{ color: "#ef4444", fontWeight: "700" }}>
-            {errorMessage}
-          </p>
-        )}
-
-        {!isLoading && !errorMessage && (
+        {filteredUsers.length === 0 ? (
+          <div className="empty-summary">
+            No hay usuarios que coincidan con los filtros seleccionados.
+          </div>
+        ) : (
           <div className="table-wrapper">
             <table className="data-table">
               <thead>
@@ -423,66 +479,53 @@ function AdminUsersPage() {
               </thead>
 
               <tbody>
-                {filteredUsers.map((user) => {
-                  const role = getUserRole(user);
-                  const status = getUserStatus(user);
-
-                  return (
-                    <tr key={user.id}>
-                      <td>
-                        <div className="user-cell">
-                          <div className="table-avatar">
-                            {user?.name?.charAt(0)?.toUpperCase() || "U"}
-                          </div>
-
-                          <div>
-                            <strong>{user.name}</strong>
-                            <span>ID: {user.id}</span>
-                          </div>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>
+                      <div className="user-cell">
+                        <div className="table-avatar">
+                          {getUserInitial(user)}
                         </div>
-                      </td>
 
-                      <td>
-                        <span className={getRoleBadgeClass(role)}>
-                          {role}
-                        </span>
-                      </td>
+                        <div>
+                          <strong>{user.name}</strong>
+                          <span>ID: {user.id}</span>
+                        </div>
+                      </div>
+                    </td>
 
-                      <td>
-                        <span className={getStatusBadgeClass(status)}>
-                          {status}
-                        </span>
-                      </td>
+                    <td>
+                      <span className={getUserRoleBadgeClass(user)}>
+                        {getUserRoleLabel(user)}
+                      </span>
+                    </td>
 
-                      <td>{user.email}</td>
+                    <td>
+                      <span className={getUserStatusBadgeClass(user)}>
+                        {getUserStatusLabel(user)}
+                      </span>
+                    </td>
 
-                      <td>
-                        <button
-                            className="table-action-button"
-                            type="button"
-                            onClick={() => navigate(`/admin/users/${user.id}/edit`)}
-                            >
-                            Ver / Editar
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    <td>{user.email}</td>
 
-                {filteredUsers.length === 0 && (
-                  <tr>
-                    <td colSpan="5">
-                      No se encontraron usuarios con los filtros seleccionados.
+                    <td>
+                      <button
+                        type="button"
+                        className="table-action-button"
+                        onClick={() => navigate(`/admin/users/${user.id}/edit`)}
+                      >
+                        Ver / Editar
+                      </button>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
         )}
-      </section>
-    </DashboardLayout>
+      </div>
+    </section>
   );
-}
+};
 
 export default AdminUsersPage;

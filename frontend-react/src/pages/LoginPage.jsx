@@ -100,9 +100,6 @@ function LoginPage() {
       // Guardamos el rol ya corregido.
       localStorage.setItem("mindia_role", userRole);
 
-      // Mostramos en consola la respuesta real para depuración.
-      console.log("Login correcto:", data);
-      console.log("Rol detectado:", userRole);
 
       // Redirigimos al usuario según su rol institucional.
       if (userRole === "admin" || userRole === "administrator") {
@@ -116,7 +113,12 @@ function LoginPage() {
       }
 
       if (userRole === "student") {
-        navigate("/student/dashboard");
+        localStorage.removeItem("mindia_token");
+        localStorage.removeItem("mindia_user");
+        localStorage.removeItem("mindia_role");
+        setErrorMessage(
+          "El acceso de estudiantes corresponde a la aplicación móvil de MindIA."
+        );
         return;
       }
 

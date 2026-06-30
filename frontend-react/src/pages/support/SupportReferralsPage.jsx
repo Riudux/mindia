@@ -304,7 +304,6 @@ const SupportReferralsPage = () => {
 
       const response = await getSupportReferralsRequest();
 
-      console.log("Casos canalizados:", response);
 
       const referralsList = extractList(response, ["referrals"]);
 

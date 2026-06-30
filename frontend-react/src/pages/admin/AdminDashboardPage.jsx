@@ -11,8 +11,6 @@ import {
 } from "lucide-react";
 
 // Importamos el layout base con sidebar y topbar.
-import DashboardLayout from "../../layouts/DashboardLayout";
-
 // Importamos los estilos específicos de la página de dashboard admin.
 import "../../styles/pages/admin/AdminDashboardPage.css";
 
@@ -164,7 +162,6 @@ function AdminDashboardPage() {
       setDashboardData(data);
 
       // Dejamos evidencia en consola para depuración.
-      console.log("Dashboard admin:", data);
     } catch (error) {
       // Tomamos el mensaje del backend si existe.
       const backendMessage =
@@ -204,7 +201,7 @@ function AdminDashboardPage() {
   const referrals = dashboardData?.referrals || {};
 
   return (
-    <DashboardLayout>
+    <>
       <section className="page-header">
         <h2>Dashboard general</h2>
 
@@ -370,7 +367,7 @@ function AdminDashboardPage() {
           </section>
         </>
       )}
-    </DashboardLayout>
+    </>
   );
 }
 

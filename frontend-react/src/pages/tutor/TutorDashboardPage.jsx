@@ -9,7 +9,7 @@ import {
   UserRoundCheck,
   Users,
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import {
   getTutorAlertsRequest,
   getTutorStudentsRequest,
@@ -29,6 +29,10 @@ import "../../styles/pages/tutor/TutorDashboardPage.css";
   no diagnósticos ni evaluaciones clínicas.
 */
 const TutorDashboardPage = () => {
+  /*
+    Hook de navegación para abrir el detalle del estudiante desde el dashboard.
+  */
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [alerts, setAlerts] = useState([]);
 
@@ -92,10 +96,6 @@ const TutorDashboardPage = () => {
         getTutorStudentsRequest(),
         getTutorAlertsRequest(),
       ]);
-
-      console.log("Respuesta tutor students:", studentsResponse);
-      console.log("Respuesta tutor alerts:", alertsResponse);
-
       const rawStudents = extractList(studentsResponse, [
         "students",
         "assigned_students",
@@ -290,6 +290,21 @@ const TutorDashboardPage = () => {
     );
   }
 
+  /*
+    Obtiene el ID correcto del estudiante para abrir su detalle.
+
+    El endpoint del backend espera el ID de la tabla students, no el user_id
+    ni el ID de la asignación tutor-estudiante.
+  */
+  const getStudentDetailId = (student) => {
+    return (
+      student?.student?.id ||
+      student?.student_id ||
+      student?.id ||
+      null
+    );
+  };
+
   return (
     <section>
       <div className="page-header-with-actions page-header">
@@ -411,7 +426,14 @@ const TutorDashboardPage = () => {
                     </div>
                   </div>
 
-                  <button type="button" className="table-action-button">
+                  <button
+                    type="button"
+                    className="table-action-button"
+                    disabled={!getStudentDetailId(student)}
+                    onClick={() =>
+                      navigate(`/tutor/students/${getStudentDetailId(student)}`)
+                    }
+                  >
                     Ver detalle
                   </button>
                 </article>

@@ -8,94 +8,101 @@ import ProtectedRoute from "./ProtectedRoute";
 import LoginPage from "../pages/LoginPage";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
 
-// Importamos página que redirige según el rol.
+// Importamos página que redirige según el rol autenticado.
 import DashboardRedirect from "../pages/DashboardRedirect";
 
-// Importamos dashboards por rol.
+// Importamos el layout general del panel web.
 import DashboardLayout from "../layouts/DashboardLayout";
 
-// Importamos dashboards temporales por rol.
+// Importamos pantallas administrativas.
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
-import TutorDashboardPage from "../pages/tutor/TutorDashboardPage";
-import SupportDashboardPage from "../pages/support/SupportDashboardPage";
-import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AdminUsersPage from "../pages/admin/AdminUsersPage";
 import AdminCreateUserPage from "../pages/admin/AdminCreateUserPage";
 import AdminEditUserPage from "../pages/admin/AdminEditUserPage";
 import AdminAssignmentsPage from "../pages/admin/AdminAssignmentsPage";
+
+// Importamos pantallas de tutor.
+import TutorDashboardPage from "../pages/tutor/TutorDashboardPage";
 import TutorStudentsPage from "../pages/tutor/TutorStudentsPage";
 import TutorStudentDetailPage from "../pages/tutor/TutorStudentDetailPage";
 import TutorAlertsPage from "../pages/tutor/TutorAlertsPage";
 import TutorAlertDetailPage from "../pages/tutor/TutorAlertDetailPage";
 import TutorReferralPage from "../pages/tutor/TutorReferralPage";
+
+// Importamos pantallas del área de apoyo.
+import SupportDashboardPage from "../pages/support/SupportDashboardPage";
 import SupportReferralsPage from "../pages/support/SupportReferralsPage";
 import SupportReferralDetailPage from "../pages/support/SupportReferralDetailPage";
 import SupportReferralAttentionPage from "../pages/support/SupportReferralAttentionPage";
 import SupportStudentsPage from "../pages/support/SupportStudentsPage";
 
+/*
+  AppRouter
+
+  Define las rutas del panel web de MindIA.
+
+  Nota importante:
+  El rol estudiante no tiene panel web en este MVP. Su flujo pertenece a la
+  aplicación móvil en Flutter, por eso no existe dashboard web de estudiante.
+*/
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta inicial.
-            Redirige automáticamente al login. */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Ruta inicial. */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Ruta pública de inicio de sesión. */}
+        {/* Rutas públicas. */}
         <Route path="/login" element={<LoginPage />} />
-
-        {/* Ruta intermedia.
-            Después del login, detecta el rol y manda al dashboard correcto. */}
         <Route path="/dashboard" element={<DashboardRedirect />} />
-
-        {/* Ruta para accesos no autorizados. */}
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-        {/* Ruta protegida del administrador.
-            Solo usuarios con rol admin pueden entrar. */}
+        {/* Bloquea cualquier intento de entrar a rutas web de estudiante. */}
+        <Route path="/student/*" element={<Navigate to="/unauthorized" replace />} />
+
+        {/* Admin. */}
         <Route
           path="/admin/dashboard"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminDashboardPage />
+              <DashboardLayout>
+                <AdminDashboardPage />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
 
         <Route
-            path="/admin/users"
-            element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminUsersPage />
-                </ProtectedRoute>
-            }
-        />
-
-        {/* Ruta protegida del estudiante.
-            Solo usuarios con rol student pueden entrar. */}
-        <Route
-          path="/student/dashboard"
+          path="/admin/users"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboardPage />
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardLayout>
+                <AdminUsersPage />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
+
         <Route
-            path="/admin/users/create"
-            element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                    <AdminCreateUserPage />
-                </ProtectedRoute>
-            }
+          path="/admin/users/create"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardLayout>
+                <AdminCreateUserPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
         />
+
         <Route
-            path="/admin/users/:id/edit"
-            element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+          path="/admin/users/:id/edit"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardLayout>
                 <AdminEditUserPage />
-                </ProtectedRoute>
-            }
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -109,9 +116,7 @@ function AppRouter() {
           }
         />
 
-
-        {/* Ruta protegida del tutor.
-            Solo usuarios con rol tutor pueden entrar. */}
+        {/* Tutor. */}
         <Route
           path="/tutor/dashboard"
           element={
@@ -178,8 +183,7 @@ function AppRouter() {
           }
         />
 
-        {/* Ruta protegida del personal de soporte.
-            Solo usuarios con rol support pueden entrar. */}
+        {/* Área de apoyo. */}
         <Route
           path="/support/dashboard"
           element={
@@ -235,9 +239,8 @@ function AppRouter() {
           }
         />
 
-        {/* Ruta comodín.
-            Si el usuario entra a una URL que no existe, se manda al login. */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        {/* Ruta comodín. */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

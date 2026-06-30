@@ -175,9 +175,6 @@ const TutorStudentsPage = () => {
       setErrorMessage("");
 
       const response = await getTutorStudentsRequest();
-
-      console.log("Respuesta Mis estudiantes:", response);
-
       const rawStudents = extractList(response, [
         "students",
         "assigned_students",

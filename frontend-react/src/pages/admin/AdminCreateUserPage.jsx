@@ -13,9 +13,6 @@ import {
   UserPlus,
 } from "lucide-react";
 
-// Importamos el layout base del dashboard.
-import DashboardLayout from "../../layouts/DashboardLayout";
-
 // Importamos los estilos específicos de la página de creación de usuarios.
 import "../../styles/pages/admin/AdminUserFormPage.css";
 
@@ -628,13 +625,11 @@ function AdminCreateUserPage() {
       const payload = buildPayload();
 
       // Mostramos el payload en consola para confirmar qué se envía.
-      console.log("Payload crear usuario:", payload);
 
       // Enviamos los datos al backend.
       const response = await createUserRequest(payload);
 
       // Mostramos respuesta real del backend.
-      console.log("Usuario creado:", response);
 
       // Mostramos mensaje de éxito.
       setSuccessMessage("Usuario creado correctamente.");
@@ -659,7 +654,6 @@ function AdminCreateUserPage() {
         setErrorMessage(backendMessage);
       }
 
-      // Mostramos detalle técnico en consola.
       console.error("Error creando usuario:", error.response?.data || error.message);
     } finally {
       // Desactivamos estado de guardado.
@@ -668,7 +662,7 @@ function AdminCreateUserPage() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <section className="page-header page-header-with-actions">
         <div>
           <p className="breadcrumb">Usuarios / Crear usuario</p>
@@ -993,7 +987,7 @@ function AdminCreateUserPage() {
           </div>
         </aside>
       </form>
-    </DashboardLayout>
+    </>
   );
 }
 

@@ -131,6 +131,53 @@ const TutorAlertDetailPage = () => {
   };
 
   /*
+    Traduce el nivel de riesgo a español para mostrarlo en pantalla.
+
+    El backend puede enviar valores como:
+    - high, medium, low
+    - critical, moderate, normal
+    - alto, medio, bajo
+
+    Internamente se conserva el valor original para filtros y guardado.
+  */
+  const getAlertRiskLevelLabel = (alert) => {
+    const rawRisk = getAlertRiskLevel(alert);
+    const risk = rawRisk.trim().toLowerCase();
+
+    if (
+      risk.includes("critical") ||
+      risk.includes("crítico") ||
+      risk.includes("critico")
+    ) {
+      return "Crítico";
+    }
+
+    if (risk.includes("high") || risk.includes("alto")) {
+      return "Alto";
+    }
+
+    if (
+      risk.includes("medium") ||
+      risk.includes("medio") ||
+      risk.includes("moderate") ||
+      risk.includes("moderado")
+    ) {
+      return "Medio";
+    }
+
+    if (risk.includes("low") || risk.includes("bajo")) {
+      return "Bajo";
+    }
+
+    if (risk.includes("normal")) {
+      return "Normal";
+    }
+
+    return rawRisk;
+  };
+
+
+  /*
     Obtiene el estado real de la alerta.
   */
   const getAlertStatus = (alertData) => {
@@ -251,9 +298,6 @@ const TutorAlertDetailPage = () => {
       setSuccessMessage("");
 
       const response = await getTutorAlertsRequest();
-
-      console.log("Detalle alerta - respuesta:", response);
-
       const alertsList = extractList(response, ["alerts"]);
 
       const selectedAlert = alertsList.find((alertItem) => {
@@ -391,7 +435,7 @@ const TutorAlertDetailPage = () => {
 
               <div className="alert-detail-badges">
                 <span className={getAlertRiskBadgeClass(alert)}>
-                  {getAlertRiskLevel(alert)}
+                  {getAlertRiskLevelLabel(alert)}
                 </span>
 
                 <span className={getAlertStatusBadgeClass(alert)}>
@@ -436,7 +480,7 @@ const TutorAlertDetailPage = () => {
               <div>
                 <span>Nivel de riesgo</span>
                 <h3 className="alert-detail-risk-title">
-                  {getAlertRiskLevel(alert)}
+                  {getAlertRiskLevelLabel(alert)}
                 </h3>
                 <small>Indicador institucional</small>
               </div>

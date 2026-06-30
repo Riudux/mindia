@@ -4,48 +4,41 @@ import { useEffect } from "react";
 // Importamos useNavigate para mover al usuario a la ruta correcta.
 import { useNavigate } from "react-router-dom";
 
+/*
+  DashboardRedirect
+
+  Redirige al usuario autenticado al panel web que corresponde a su rol.
+  En este MVP, el rol estudiante pertenece a la aplicación móvil en Flutter,
+  por eso no se redirige a un dashboard web de estudiante.
+*/
 function DashboardRedirect() {
-  // Hook para navegar entre rutas.
   const navigate = useNavigate();
 
-  // Obtenemos el token guardado en el login.
   const token = localStorage.getItem("mindia_token");
-
-  // Obtenemos el rol detectado en el login.
-  const role = localStorage.getItem("mindia_role");
+  const role = String(localStorage.getItem("mindia_role") || "").toLowerCase();
 
   useEffect(() => {
-    // Si no hay token, no existe sesión activa.
     if (!token) {
-      navigate("/login");
+      navigate("/login", { replace: true });
       return;
     }
 
-    // Redirigimos según el rol del usuario.
-    // Esto permite mandar cada usuario a su dashboard correspondiente.
     if (role === "admin") {
-      navigate("/admin/dashboard");
+      navigate("/admin/dashboard", { replace: true });
       return;
     }
 
     if (role === "tutor") {
-      navigate("/tutor/dashboard");
+      navigate("/tutor/dashboard", { replace: true });
       return;
     }
 
-    if (role === "support") {
-      navigate("/support/dashboard");
+    if (role === "support" || role === "support_staff") {
+      navigate("/support/dashboard", { replace: true });
       return;
     }
 
-    if (role === "student") {
-      navigate("/student/dashboard");
-      return;
-    }
-
-    // Si el rol no coincide con ninguno esperado,
-    // mandamos al usuario a acceso denegado.
-    navigate("/unauthorized");
+    navigate("/unauthorized", { replace: true });
   }, [token, role, navigate]);
 
   return (

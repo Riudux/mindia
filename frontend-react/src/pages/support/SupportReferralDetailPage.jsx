@@ -207,6 +207,45 @@ const SupportReferralDetailPage = () => {
   };
 
   /*
+    Traduce el nivel de riesgo relacionado a español.
+  */
+  const getAlertRiskLevelLabel = (referralData) => {
+    const rawRisk = getAlertRiskLevel(referralData);
+    const risk = rawRisk.trim().toLowerCase();
+
+    if (
+      risk.includes("critical") ||
+      risk.includes("crítico") ||
+      risk.includes("critico")
+    ) {
+      return "Crítico";
+    }
+
+    if (risk.includes("high") || risk.includes("alto")) {
+      return "Alto";
+    }
+
+    if (
+      risk.includes("medium") ||
+      risk.includes("medio") ||
+      risk.includes("moderate") ||
+      risk.includes("moderado")
+    ) {
+      return "Medio";
+    }
+
+    if (risk.includes("low") || risk.includes("bajo")) {
+      return "Bajo";
+    }
+
+    if (risk.includes("normal")) {
+      return "Normal";
+    }
+
+    return rawRisk;
+  };
+
+  /*
     Obtiene la prioridad real del caso.
 
     Estados esperados:
@@ -354,7 +393,6 @@ const SupportReferralDetailPage = () => {
 
       const response = await getSupportReferralsRequest();
 
-      console.log("Detalle caso canalizado:", response);
 
       const referralsList = extractList(response, ["referrals"]);
 
@@ -632,7 +670,7 @@ const SupportReferralDetailPage = () => {
                 <strong>Alerta relacionada</strong>
                 <p>{getAlertDescription(referral)}</p>
                 <span className="badge light-blue">
-                  Riesgo relacionado: {getAlertRiskLevel(referral)}
+                  Riesgo relacionado: {getAlertRiskLevelLabel(referral)}
                 </span>
               </div>
             </div>

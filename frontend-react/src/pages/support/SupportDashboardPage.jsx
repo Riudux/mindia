@@ -191,7 +191,7 @@ const SupportDashboardPage = () => {
       return "Pendiente";
     }
 
-    if (status === "in_progress") {
+    if (status === "in_review" || status === "in_progress") {
       return "En atención";
     }
 
@@ -212,7 +212,7 @@ const SupportDashboardPage = () => {
       return "badge orange";
     }
 
-    if (status === "in_progress") {
+    if (status === "in_review" || status === "in_progress") {
       return "badge light-blue";
     }
 
@@ -249,7 +249,6 @@ const SupportDashboardPage = () => {
 
       const response = await getSupportReferralsRequest();
 
-      console.log("Respuesta support referrals:", response);
 
       const referralsList = extractList(response, ["referrals"]);
 

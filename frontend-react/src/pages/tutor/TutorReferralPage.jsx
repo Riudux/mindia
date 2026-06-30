@@ -128,6 +128,53 @@ const TutorReferralPage = () => {
   };
 
   /*
+    Traduce el nivel de riesgo a español para mostrarlo en pantalla.
+
+    El backend puede enviar valores como:
+    - high, medium, low
+    - critical, moderate, normal
+    - alto, medio, bajo
+
+    Internamente se conserva el valor original para filtros y guardado.
+  */
+  const getAlertRiskLevelLabel = (alert) => {
+    const rawRisk = getAlertRiskLevel(alert);
+    const risk = rawRisk.trim().toLowerCase();
+
+    if (
+      risk.includes("critical") ||
+      risk.includes("crítico") ||
+      risk.includes("critico")
+    ) {
+      return "Crítico";
+    }
+
+    if (risk.includes("high") || risk.includes("alto")) {
+      return "Alto";
+    }
+
+    if (
+      risk.includes("medium") ||
+      risk.includes("medio") ||
+      risk.includes("moderate") ||
+      risk.includes("moderado")
+    ) {
+      return "Medio";
+    }
+
+    if (risk.includes("low") || risk.includes("bajo")) {
+      return "Bajo";
+    }
+
+    if (risk.includes("normal")) {
+      return "Normal";
+    }
+
+    return rawRisk;
+  };
+
+
+  /*
     Obtiene la descripción de la alerta.
   */
   const getAlertDescription = (alertData) => {
@@ -206,10 +253,6 @@ const TutorReferralPage = () => {
         getTutorAlertsRequest(),
         getTutorSupportStaffRequest(),
         ]);
-
-        console.log("Canalización - alertas:", alertsResponse);
-        console.log("Canalización - personal de apoyo:", supportStaffResponse);
-
         const alertsList = extractList(alertsResponse, ["alerts"]);
 
         const supportList = extractList(supportStaffResponse, [
@@ -437,7 +480,7 @@ const TutorReferralPage = () => {
 
                   <input
                     type="text"
-                    value={getAlertRiskLevel(alert)}
+                    value={getAlertRiskLevelLabel(alert)}
                     disabled
                   />
                 </label>
@@ -510,7 +553,7 @@ const TutorReferralPage = () => {
             <div className="referral-summary-section">
               <span>Riesgo</span>
               <strong className={getRiskBadgeClass(alert)}>
-                {getAlertRiskLevel(alert)}
+                {getAlertRiskLevelLabel(alert)}
               </strong>
             </div>
 

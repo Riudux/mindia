@@ -2,17 +2,13 @@
 import { useNavigate } from "react-router-dom";
 
 function UnauthorizedPage() {
-  // Hook para navegar entre rutas.
   const navigate = useNavigate();
 
-  // Función para cerrar sesión localmente y regresar al login.
   const handleBackToLogin = () => {
-    // Eliminamos los datos guardados de sesión.
     localStorage.removeItem("mindia_token");
     localStorage.removeItem("mindia_user");
     localStorage.removeItem("mindia_role");
 
-    // Redirigimos al login.
     navigate("/login");
   };
 
@@ -21,10 +17,15 @@ function UnauthorizedPage() {
       <h1>Acceso denegado</h1>
 
       <p>
-        Tu usuario no tiene permisos para acceder a esta sección del sistema.
+        Tu usuario no tiene permisos para acceder a esta sección del sistema web.
       </p>
 
-      <button onClick={handleBackToLogin}>
+      <p>
+        Si eres estudiante, tu acceso corresponde a la aplicación móvil de
+        MindIA.
+      </p>
+
+      <button type="button" onClick={handleBackToLogin}>
         Regresar al login
       </button>
     </main>

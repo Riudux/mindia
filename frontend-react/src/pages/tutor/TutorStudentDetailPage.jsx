@@ -265,6 +265,78 @@ const TutorStudentDetailPage = () => {
     };
 
     /*
+    Traduce el nivel de riesgo institucional a español para mostrarlo
+    en pantalla.
+
+    El backend puede mandar valores como:
+    - Indicador de riesgo alto
+    - Indicador de riesgo medio
+    - Indicador de riesgo bajo
+    - high, medium, low
+    */
+    const getRiskLevelLabel = () => {
+    const rawLevel = getRiskLevel();
+    const level = rawLevel.trim().toLowerCase();
+
+    if (
+        level.includes("critical") ||
+        level.includes("crítico") ||
+        level.includes("critico")
+    ) {
+        return "Indicador crítico de seguimiento";
+    }
+
+    if (level.includes("high") || level.includes("alto")) {
+        return "Indicador de riesgo alto";
+    }
+
+    if (
+        level.includes("medium") ||
+        level.includes("medio") ||
+        level.includes("moderate") ||
+        level.includes("moderado")
+    ) {
+        return "Indicador de riesgo medio";
+    }
+
+    if (level.includes("low") || level.includes("bajo")) {
+        return "Indicador de riesgo bajo";
+    }
+
+    if (level.includes("normal")) {
+        return "Indicador de seguimiento normal";
+    }
+
+    return rawLevel;
+    };
+
+    /*
+    Traduce recomendaciones comunes que puedan llegar en inglés desde
+    el backend o desde reglas internas de análisis.
+    */
+    const getRiskRecommendationLabel = () => {
+    const recommendation = getRiskRecommendation();
+    const normalizedRecommendation = recommendation.trim().toLowerCase();
+
+    if (
+        normalizedRecommendation.includes("repeated or intense emotional signals") ||
+        normalizedRecommendation.includes("require prompt tutor follow-up")
+    ) {
+        return "El estudiante muestra señales emocionales repetidas o intensas que pueden requerir seguimiento oportuno por parte del tutor.";
+    }
+
+    if (
+        normalizedRecommendation.includes("no recommendation") ||
+        normalizedRecommendation.includes("without recommendation")
+    ) {
+        return "Sin recomendación registrada.";
+    }
+
+    return recommendation;
+    };
+
+
+    /*
     Obtiene el puntaje de riesgo si existe.
 
     Siempre regresa texto o número simple, nunca un objeto.
@@ -366,12 +438,6 @@ const TutorStudentDetailPage = () => {
         getTutorStudentEmotionalTrendsRequest(id),
         getTutorStudentRiskSummaryRequest(id),
       ]);
-
-      console.log("Detalle - estudiantes:", studentsResponse);
-      console.log("Detalle - registros:", recordsResponse);
-      console.log("Detalle - tendencias:", trendsResponse);
-      console.log("Detalle - riesgo:", riskResponse);
-
       const rawStudents = extractList(studentsResponse, [
         "students",
         "assigned_students",
@@ -626,7 +692,7 @@ const TutorStudentDetailPage = () => {
 
               <div>
                 <span>Nivel</span>
-                <h3 className="risk-level-title">{getRiskLevel()}</h3>
+                <h3 className="risk-level-title">{getRiskLevelLabel()}</h3>
                 <small>Seguimiento sugerido</small>
               </div>
             </article>
@@ -689,14 +755,14 @@ const TutorStudentDetailPage = () => {
                 <div>
                   <span>Nivel actual</span>
                   <strong className={getRiskBadgeClass()}>
-                    {getRiskLevel()}
+                    {getRiskLevelLabel()}
                   </strong>
                 </div>
               </div>
 
               <div className="student-risk-recommendation">
                 <strong>Recomendación:</strong>
-                <p>{getRiskRecommendation()}</p>
+                <p>{getRiskRecommendationLabel()}</p>
               </div>
 
               <div className="info-box">

@@ -277,6 +277,10 @@ class UserController extends Controller
     */
     public function update(Request $request, User $user)
     {
+
+        if ($response = $this->ensureAdmin($request)) {
+            return $response;
+        }
         // Convertimos el rol recibido a número para validar campos condicionales.
         $roleId = (int) $request->input('role_id');
 
@@ -312,6 +316,12 @@ class UserController extends Controller
             'is_active' => [
                 'required',
                 'boolean',
+            ],
+
+            'status' => [
+                'nullable',
+                'string',
+                Rule::in(['active', 'inactive']),
             ],
 
             /*
@@ -408,15 +418,45 @@ class UserController extends Controller
         return DB::transaction(function () use ($validated, $user, $roleId) {
             /*
             |--------------------------------------------------------------------------
-            | Actualizar tabla users
+            | Sincronizar estado del usuario
             |--------------------------------------------------------------------------
+            |
+            | El sistema maneja dos formas de estado:
+            |
+            | - is_active: booleano usado por algunas vistas del frontend.
+            | - status: texto usado por login y tabla de usuarios.
+            |
+            | Para evitar inconsistencias, ambos valores se actualizan juntos.
+            |
             */
-            $user->update([
+            $isActive = filter_var($validated['is_active'], FILTER_VALIDATE_BOOLEAN);
+
+            $statusValue = $isActive ? 'active' : 'inactive';
+
+            $userData = [
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'role_id' => $validated['role_id'],
-                'is_active' => $validated['is_active'],
-            ]);
+            ];
+
+            /*
+            * Actualiza is_active solo si existe la columna.
+            */
+            if (Schema::hasColumn('users', 'is_active')) {
+                $userData['is_active'] = $isActive;
+            }
+
+            /*
+            * Actualiza status solo si existe la columna.
+            */
+            if (Schema::hasColumn('users', 'status')) {
+                $userData['status'] = $statusValue;
+            }
+
+            /*
+            * forceFill evita problemas si algún campo no está en $fillable.
+            */
+            $user->forceFill($userData)->save();
 
             /*
             |--------------------------------------------------------------------------
@@ -536,23 +576,45 @@ class UserController extends Controller
         });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar estado de usuario
+    |--------------------------------------------------------------------------
+    |
+    | Actualiza el estado de acceso del usuario desde el panel administrativo.
+    |
+    | Se sincronizan:
+    | - status: active / inactive
+    | - is_active: true / false
+    |
+    */
     public function updateStatus(Request $request, User $user)
     {
         if ($response = $this->ensureAdmin($request)) {
             return $response;
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
-        $user->update([
-            'status' => $request->status,
-        ]);
+        $isActive = $validated['status'] === 'active';
+
+        $userData = [];
+
+        if (Schema::hasColumn('users', 'status')) {
+            $userData['status'] = $validated['status'];
+        }
+
+        if (Schema::hasColumn('users', 'is_active')) {
+            $userData['is_active'] = $isActive;
+        }
+
+        $user->forceFill($userData)->save();
 
         return response()->json([
             'message' => 'User status updated successfully.',
-            'user' => $user->load('role'),
+            'user' => $user->fresh()->load('role'),
         ]);
     }
 

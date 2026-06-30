@@ -111,6 +111,53 @@ const TutorAlertsPage = () => {
   };
 
   /*
+    Traduce el nivel de riesgo a español para mostrarlo en pantalla.
+
+    El backend puede enviar valores como:
+    - high, medium, low
+    - critical, moderate, normal
+    - alto, medio, bajo
+
+    Internamente se conserva el valor original para filtros y guardado.
+  */
+  const getAlertRiskLevelLabel = (alert) => {
+    const rawRisk = getAlertRiskLevel(alert);
+    const risk = rawRisk.trim().toLowerCase();
+
+    if (
+      risk.includes("critical") ||
+      risk.includes("crítico") ||
+      risk.includes("critico")
+    ) {
+      return "Crítico";
+    }
+
+    if (risk.includes("high") || risk.includes("alto")) {
+      return "Alto";
+    }
+
+    if (
+      risk.includes("medium") ||
+      risk.includes("medio") ||
+      risk.includes("moderate") ||
+      risk.includes("moderado")
+    ) {
+      return "Medio";
+    }
+
+    if (risk.includes("low") || risk.includes("bajo")) {
+      return "Bajo";
+    }
+
+    if (risk.includes("normal")) {
+      return "Normal";
+    }
+
+    return rawRisk;
+  };
+
+
+  /*
     Obtiene el estado de la alerta.
   */
   const getAlertStatus = (alert) => {
@@ -225,9 +272,6 @@ const TutorAlertsPage = () => {
       setSuccessMessage("");
 
       const response = await getTutorAlertsRequest();
-
-      console.log("Respuesta alertas tutor:", response);
-
       const alertsList = extractList(response, ["alerts"]);
 
       setAlerts(alertsList);
@@ -304,6 +348,7 @@ const TutorAlertsPage = () => {
         getAlertStudentName(alert),
         getAlertStudentEmail(alert),
         getAlertRiskLevel(alert),
+        getAlertRiskLevelLabel(alert),
         getAlertDescription(alert),
         getAlertStatusLabel(alert),
       ]
@@ -535,7 +580,7 @@ const TutorAlertsPage = () => {
 
                     <td>
                       <span className={getAlertRiskBadgeClass(alert)}>
-                        {getAlertRiskLevel(alert)}
+                        {getAlertRiskLevelLabel(alert)}
                       </span>
                     </td>
 

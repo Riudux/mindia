@@ -54,6 +54,64 @@
   font-weight: 600;
 }
 
+/*
+|--------------------------------------------------------------------------
+| Filtros de búsqueda - Gestión de usuarios
+|--------------------------------------------------------------------------
+|
+| Acomoda el buscador, filtro de rol y filtro de estado en una misma fila.
+| También fuerza a los select a verse como inputs modernos del dashboard.
+|
+*/
+.users-filters-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 240px 240px;
+  gap: 14px;
+  align-items: center;
+}
+
+/*
+ * Buscador principal.
+ */
+.users-filters-grid .filter-input {
+  width: 100%;
+  min-width: 0;
+}
+
+/*
+ * Selects de rol y estado.
+ */
+.users-filters-grid select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+}
+
+/*
+ * Efecto al seleccionar el filtro.
+ */
+.users-filters-grid select:focus {
+  border-color: #0b63f6;
+  box-shadow: 0 0 0 3px rgba(11, 99, 246, 0.12);
+}
+
+/*
+ * Responsive para pantallas pequeñas.
+ */
+@media (max-width: 900px) {
+  .users-filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Responsive de filtros */
 @media (max-width: 900px) {
   .filters-grid {

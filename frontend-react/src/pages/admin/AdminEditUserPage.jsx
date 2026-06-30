@@ -18,9 +18,6 @@ import {
   User,
 } from "lucide-react";
 
-// Importamos el layout base del dashboard.
-import DashboardLayout from "../../layouts/DashboardLayout";
-
 // Importamos los estilos específicos de la página de edición de usuarios.
 import "../../styles/pages/admin/AdminUserFormPage.css";
 
@@ -639,7 +636,6 @@ function AdminEditUserPage() {
       // Llenamos grupo si existe.
       setGroupName(profileData?.group_name || userData?.group_name || "");
 
-      console.log("Usuario para editar:", responseData);
     } catch (error) {
       const backendMessage =
         error.response?.data?.message || "No se pudo cargar el usuario.";
@@ -782,11 +778,9 @@ function AdminEditUserPage() {
     try {
       const payload = buildPayload();
 
-      console.log("Payload actualizar usuario:", payload);
 
       const response = await updateUserRequest(id, payload);
 
-      console.log("Usuario actualizado:", response);
 
       setSuccessMessage("Usuario actualizado correctamente.");
 
@@ -833,7 +827,6 @@ function AdminEditUserPage() {
     try {
       const response = await updateUserStatusRequest(id, nextStatus);
 
-      console.log("Estado actualizado:", response);
 
       setIsActive(nextStatus);
 
@@ -859,7 +852,7 @@ function AdminEditUserPage() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <section className="page-header page-header-with-actions">
         <div>
           <p className="breadcrumb">Usuarios / Editar usuario</p>
@@ -1179,7 +1172,7 @@ function AdminEditUserPage() {
           </aside>
         </form>
       )}
-    </DashboardLayout>
+    </>
   );
 }
 

@@ -14,10 +14,11 @@ export const getSupportReferralsRequest = async () => {
 /*
   Actualiza el estado de una canalización.
 
-  Este endpoint se usará más adelante para marcar casos como:
+  Este endpoint permite marcar casos como:
   - pending
-  - in_progress
-  - closed
+  - in_review
+  - completed
+  - cancelled
 */
 export const updateSupportReferralStatusRequest = async (referralId, payload) => {
   const response = await apiClient.patch(
