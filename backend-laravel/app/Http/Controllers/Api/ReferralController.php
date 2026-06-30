@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\StudentTutorAssignment;
 use App\Models\SupportStaff;
 use App\Models\Tutor;
+use App\Models\ReferralFollowup;
 use Illuminate\Http\Request;
 
 class ReferralController extends Controller
@@ -360,5 +361,144 @@ class ReferralController extends Controller
                 'referredTo.user',
             ]),
         ]);
+    }
+
+    /*
+    * Valida que una canalización pertenezca al personal de apoyo autenticado.
+    *
+    * Esto evita que un usuario de apoyo consulte o registre atención
+    * en casos asignados a otra persona.
+    */
+    private function ensureReferralBelongsToSupportStaff(Referral $referral, SupportStaff $supportStaff)
+    {
+        if ((int) $referral->referred_to !== (int) $supportStaff->id) {
+            return response()->json([
+                'message' => 'Access denied. This referral is not assigned to the authenticated support staff.',
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /*
+    * Lista las atenciones registradas para una canalización.
+    *
+    * Endpoint:
+    * GET /api/support/referrals/{referral}/followups
+    */
+    public function supportFollowupsIndex(Request $request, Referral $referral)
+    {
+        if ($response = $this->ensureSupport($request)) {
+            return $response;
+        }
+
+        $supportStaff = $this->getAuthenticatedSupportStaff($request);
+
+        if ($supportStaff instanceof \Illuminate\Http\JsonResponse) {
+            return $supportStaff;
+        }
+
+        if ($response = $this->ensureReferralBelongsToSupportStaff($referral, $supportStaff)) {
+            return $response;
+        }
+
+        $followups = ReferralFollowup::with([
+                'supportStaff.user',
+                'referral.student.user',
+                'referral.tutor.user',
+                'referral.alert',
+            ])
+            ->where('referral_id', $referral->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'referral' => $referral->load([
+                'student.user',
+                'tutor.user',
+                'alert',
+                'referredTo.user',
+            ]),
+            'followups' => $followups,
+        ]);
+    }
+
+    /*
+    * Registra una atención realizada por personal de apoyo.
+    *
+    * Endpoint:
+    * POST /api/support/referrals/{referral}/followups
+    */
+    public function storeSupportFollowup(Request $request, Referral $referral)
+    {
+        if ($response = $this->ensureSupport($request)) {
+            return $response;
+        }
+
+        $supportStaff = $this->getAuthenticatedSupportStaff($request);
+
+        if ($supportStaff instanceof \Illuminate\Http\JsonResponse) {
+            return $supportStaff;
+        }
+
+        if ($response = $this->ensureReferralBelongsToSupportStaff($referral, $supportStaff)) {
+            return $response;
+        }
+
+        /*
+        * Valida los datos enviados desde React.
+        *
+        * close_case permite cerrar el caso al mismo tiempo que se registra
+        * la atención.
+        */
+        $validated = $request->validate([
+            'attention_type' => ['required', 'string', 'in:orientation,interview,follow_up,internal_referral,other'],
+            'notes' => ['required', 'string', 'max:2000'],
+            'result' => ['nullable', 'string', 'max:2000'],
+            'status' => ['nullable', 'string', 'in:registered,completed'],
+            'attended_at' => ['nullable', 'date'],
+            'close_case' => ['nullable', 'boolean'],
+        ]);
+
+        $followup = ReferralFollowup::create([
+            'referral_id' => $referral->id,
+            'support_staff_id' => $supportStaff->id,
+            'attention_type' => $validated['attention_type'],
+            'notes' => $validated['notes'],
+            'result' => $validated['result'] ?? null,
+            'status' => $validated['status'] ?? 'registered',
+            'attended_at' => $validated['attended_at'] ?? now(),
+        ]);
+
+        /*
+        * Actualiza el estado del caso:
+        * - Si close_case es true, el caso se cierra.
+        * - Si estaba pendiente y no se cierra, pasa a revisión.
+        */
+        if (($validated['close_case'] ?? false) === true) {
+            $referral->update([
+                'status' => 'completed',
+            ]);
+        } elseif ($referral->status === 'pending') {
+            $referral->update([
+                'status' => 'in_review',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Referral follow-up registered successfully.',
+            'followup' => $followup->load([
+                'supportStaff.user',
+                'referral.student.user',
+                'referral.tutor.user',
+                'referral.alert',
+            ]),
+            'referral' => $referral->fresh()->load([
+                'student.user',
+                'tutor.user',
+                'alert',
+                'referredTo.user',
+            ]),
+        ], 201);
     }
 }

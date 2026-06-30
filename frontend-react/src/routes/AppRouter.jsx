@@ -30,6 +30,8 @@ import TutorAlertDetailPage from "../pages/tutor/TutorAlertDetailPage";
 import TutorReferralPage from "../pages/tutor/TutorReferralPage";
 import SupportReferralsPage from "../pages/support/SupportReferralsPage";
 import SupportReferralDetailPage from "../pages/support/SupportReferralDetailPage";
+import SupportReferralAttentionPage from "../pages/support/SupportReferralAttentionPage";
+import SupportStudentsPage from "../pages/support/SupportStudentsPage";
 
 function AppRouter() {
   return (
@@ -206,6 +208,28 @@ function AppRouter() {
             <ProtectedRoute allowedRoles={["support", "support_staff"]}>
               <DashboardLayout>
                 <SupportReferralDetailPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/support/referrals/:id/attention"
+          element={
+            <ProtectedRoute allowedRoles={["support", "support_staff"]}>
+              <DashboardLayout>
+                <SupportReferralAttentionPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/support/students"
+          element={
+            <ProtectedRoute allowedRoles={["support", "support_staff"]}>
+              <DashboardLayout>
+                <SupportStudentsPage />
               </DashboardLayout>
             </ProtectedRoute>
           }

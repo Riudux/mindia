@@ -174,6 +174,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Soporte institucional actualiza el estado de una canalización.
     Route::patch('/support/referrals/{referral}/status', [ReferralController::class, 'updateStatus']);
+
+    // Soporte institucional consulta los detalles de una canalización.
+    Route::get('/support/referrals/{referral}/followups', [ReferralController::class, 'supportFollowupsIndex']);
+
+    // Soporte institucional registra un seguimiento sobre una canalización.
+    Route::post('/support/referrals/{referral}/followups', [ReferralController::class, 'storeSupportFollowup']);
+
     /*
     |--------------------------------------------------------------------------
     | Admin Dashboard Routes

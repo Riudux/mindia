@@ -69,4 +69,12 @@ class Referral extends Model
     {
         return $this->belongsTo(SupportStaff::class, 'referred_to');
     }
+
+    /*
+    * Atenciones registradas sobre esta canalización.
+    */
+    public function followups()
+    {
+        return $this->hasMany(ReferralFollowup::class);
+    }
 }

@@ -177,7 +177,7 @@ const NAV_ITEMS = {
       label: "Estudiantes en seguimiento",
       path: "/support/students",
       icon: Users,
-      ready: false,
+      ready: true,
     },
     {
       label: "Citas",

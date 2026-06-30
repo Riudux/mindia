@@ -11,6 +11,7 @@ import {
   RefreshCw,
   UserRound,
   UserRoundCheck,
+  ClipboardPlus,
 } from "lucide-react";
 
 import {
@@ -548,6 +549,15 @@ const SupportReferralDetailPage = () => {
               {getReferralStatus(referral) === "cancelled" && (
                 <span className="badge red">Caso cancelado</span>
               )}
+
+              <button
+                type="button"
+                className="primary-action-button"
+                onClick={() => navigate(`/support/referrals/${id}/attention`)}
+              >
+                <ClipboardPlus size={18} />
+                Registrar atención
+              </button>
             </div>
           </div>
 
